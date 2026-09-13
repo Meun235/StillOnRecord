@@ -34,6 +34,7 @@ OUT = os.path.join(ROOT, 'dist')
 YEAR_FLOOR = 1500          # config value, not a research decision
 YEAR_CEIL = date.today().year
 
+DOMAIN = 'stillonrecord.org'   # written to dist/CNAME on every build
 TAGLINE = 'A sourced map of deliberately caused mass suffering, 1500 to now.'
 
 BASIS = {
@@ -654,6 +655,9 @@ def main():
     for d in recs:
         with open(os.path.join(OUT, 'record', d['id'] + '.html'), 'w', encoding='utf-8') as f:
             f.write(build_record(d, recs))
+
+    with open(os.path.join(OUT, 'CNAME'), 'w', encoding='utf-8') as f:
+        f.write(DOMAIN + '\n')
 
     write_artifacts(recs)
 

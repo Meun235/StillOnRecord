@@ -19,17 +19,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
       - name: Install dependencies
         run: |
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
       - name: Build
         run: |
           mkdir -p dist
-          cp -r *.html dist/ 2>/dev/null || true
-          [ -f dist/index.html ] || echo "<h1>Still on Record</h1>" > dist/index.html
+          cp -r site/. dist/
+          if [ -f build.py ]; then python3 build.py; fi
+          ls -la dist
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

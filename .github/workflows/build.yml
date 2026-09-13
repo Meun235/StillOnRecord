@@ -30,10 +30,18 @@ jobs:
 
       - name: Build
         run: |
-          mkdir -p dist
-          cp -r site/. dist/
           if [ -f build.py ]; then python3 build.py; fi
+          mkdir -p dist
+          if [ -n "$(ls -A dist 2>/dev/null)" ]; then
+            echo "build.py wrote dist directly"
+          elif [ -d site ]; then
+            echo "copying site/ into dist/"
+            cp -r site/. dist/
+          fi
+          echo "--- contents of dist ---"
           ls -la dist
+          echo "--- record pages generated ---"
+          ls dist/record 2>/dev/null | wc -l
 
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -251,6 +251,7 @@ def build_index(recs):
       underneath, so zoom in. Unlocated records stay in the list and never get a pin.
     </div>
     <div class="mapmsg" id="mapmsg" hidden>
+      <button class="mapmsg-x" id="mapmsg-x" aria-label="Dismiss">\u00d7</button>
       <b>The basemap didn\u2019t load.</b>
       Tiles come from OpenFreeMap and need a connection. Every record is still readable in the
       index on the left, and the register never needed the map.

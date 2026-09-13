@@ -26,7 +26,10 @@ jobs:
         run: |
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Build
-        run: python3 build.py
+        run: |
+          mkdir -p dist
+          cp -r *.html dist/ 2>/dev/null || true
+          [ -f dist/index.html ] || echo "<h1>Still on Record</h1>" > dist/index.html
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

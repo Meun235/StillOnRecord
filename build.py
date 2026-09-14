@@ -11,7 +11,7 @@ No dependencies beyond the standard library. Run it in CI on push; a failing
 validation should fail the build.
 """
 
-import csv, json, html, os, shutil, sys
+import csv, json, html, os, re, shutil, sys
 from datetime import date
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -62,6 +62,8 @@ TIER = {'1': 'Court judgment, tribunal, truth commission, state archive, or peer
         '2': 'Academic or NGO work with published methodology',
         '3': 'Journalism, testimony, or advocacy'}
 
+LICENCES = {'own', 'public_domain', 'cc0', 'cc_by', 'cc_by_sa', 'permission'}
+
 e = html.escape
 
 
@@ -111,6 +113,22 @@ def validate(recs):
             errors.append(f'{i}: unmapped geometry outside the register layer')
         if d['layer'] == 'register' and d['default_visible'] == 'TRUE':
             errors.append(f'{i}: register row marked visible by default')
+        if d.get('image_file'):
+            for f2 in ('image_caption', 'image_credit', 'image_licence'):
+                if not d.get(f2):
+                    errors.append(f'{i}: image present with no {f2}')
+            if d.get('image_licence') and d['image_licence'] not in LICENCES:
+                errors.append(f'{i}: image_licence "{d["image_licence"]}" not recognised')
+            if d.get('image_tier') not in ('A', 'B', 'C'):
+                errors.append(f'{i}: image_tier must be A, B or C, see image policy')
+            if d.get('image_tier') == 'C' and not d.get('image_warning'):
+                errors.append(f'{i}: tier C image with no image_warning line')
+        if d.get('quote') and not d.get('quote_source'):
+            errors.append(f'{i}: quote present with no quote_source')
+        if d.get('quote') and not d.get('quote_speaker'):
+            errors.append(f'{i}: quote present with no quote_speaker')
+        if d.get('quote') and len(d['quote'].split()) > 45:
+            errors.append(f'{i}: quote is {len(d["quote"].split())} words, keep it short')
         if d['ey'] < d['sy']:
             errors.append(f'{i}: end_year before start_year')
         if d['sy'] < YEAR_FLOOR:
@@ -182,6 +200,8 @@ FOOT = """<footer class="foot"><div class="in">
 Data under the Open Database License, text under CC BY-SA 4.0. Free for any use including
 commercial, with attribution and share-alike. Run by a Netherlands stichting; board, policy
 plan and annual figures are published. No advertising, no paywall, no sponsored content.
+<br><a href="method.html">Method</a> \u00b7 <a href="rules.html">Inclusion rules</a>
+\u00b7 <a href="images.html">Image policy</a> \u00b7 <a href="register.html">Register</a>
 <br>Seed stage: records name their sources, and those sources have not yet been opened and
 checked one by one. Coordinates are approximate and unverified. Not for citation.
 </div></footer>"""
@@ -195,7 +215,8 @@ def build_index(recs):
               'country_today perpetrator perpetrator_today succession_type target_group '
               'category deaths_low deaths_high toll_basis affected_low affected_high '
               'affected_measure toll_note evidence_tier status documentation_completeness '
-              'key_source notes register_reason unlock').split()
+              'key_source notes quote quote_speaker quote_source '
+              'register_reason unlock').split()
     slim = []
     for d in recs:
         o = {k: d[k] for k in fields if d.get(k)}
@@ -327,6 +348,25 @@ def build_record(d, recs):
     dl = '\n'.join(f'  <dt>{k}</dt><dd>{v}</dd>' for k, v in rows)
 
     prose = ''
+    if d.get('image_file'):
+        cred = (f'<span class="credit">{e(d["image_credit"])}'
+                f' \u00b7 {e(d["image_licence"].replace("_", " "))}</span>')
+        img = (f'<img src="../{e(d["image_file"])}" alt="{e(d["image_caption"])}" loading="lazy">')
+        if d.get('image_tier') == 'C':
+            prose += (f'<figure class="rec-img graphic">'
+                      f'<details><summary>{e(d["image_warning"])}'
+                      '<span class="show">Show image</span></summary>'
+                      f'{img}</details>'
+                      f'<figcaption>{e(d["image_caption"])}{cred}</figcaption></figure>')
+        else:
+            prose += (f'<figure class="rec-img">{img}'
+                      f'<figcaption>{e(d["image_caption"])}{cred}</figcaption></figure>')
+    if d.get('quote'):
+        sp = e(d['quote_speaker']) if d.get('quote_speaker') else 'Unattributed'
+        src = f'<span class="qsrc">{e(d["quote_source"])}</span>' if d.get('quote_source') else ''
+        prose += ('<blockquote class="testimony">'
+                  f'<p>{e(d["quote"])}</p>'
+                  f'<footer>{sp}{src}</footer></blockquote>')
     if d.get('notes'):
         prose += f'<p>{e(d["notes"])}.</p>'
     if d.get('toll_note'):
@@ -527,6 +567,14 @@ dates, the perpetrator and the figure separately, the record carries its seeded 
 own page.</p>
 <p>A correction that moves a record from confirmed to contested is a success, not a defeat.</p>
 
+<h2 id="images">Images</h2>
+<p>Images are published where they document something the record needs: scale, conditions,
+method, the state of a place. Difficulty is not the test, purpose is. Photographs of the dead,
+of injury and of killing in progress are published where they meet that test, and they sit
+behind a control that says what they show before it opens. They never appear on the map, in a
+preview or in a search result. The full policy, including what is refused outright, is on the
+<a href="images.html">image policy</a> page.</p>
+
 <h2>Corrections</h2>
 <p>Sourced corrections are acted on. Unsourced ones are not argued with. Send the record id,
 what is wrong, and the source, to
@@ -599,6 +647,102 @@ of these records possible.</p>
     return shell(('About \u2014 Still on Record', 'about.html'), body)
 
 
+
+# ---------------------------------------------------------------- policy pages
+
+
+def md_to_html(text):
+    """Minimal markdown: headings, tables, lists, bold, italic, code, links, rules."""
+    out, para, rows = [], [], []
+
+    def flush_para():
+        if para:
+            out.append('<p>' + inline(' '.join(para)) + '</p>')
+            para.clear()
+
+    def flush_table():
+        if not rows:
+            return
+        head, body = rows[0], [r for r in rows[1:] if not set(r) <= set('-: ')]
+        out.append('<table><thead><tr>' +
+                   ''.join(f'<th>{inline(c)}</th>' for c in head) + '</tr></thead><tbody>' +
+                   ''.join('<tr>' + ''.join(f'<td>{inline(c)}</td>' for c in r) + '</tr>'
+                           for r in body) + '</tbody></table>')
+        rows.clear()
+
+    def inline(t):
+        t = e(t)
+        t = re.sub(r'`([^`]+)`', r'<code>\1</code>', t)
+        t = re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', t)
+        t = re.sub(r'(?<![*\w])\*([^*]+)\*(?!\w)', r'<em>\1</em>', t)
+        t = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', t)
+        return t
+
+    lines = text.split('\n')
+    i, in_list = 0, False
+    while i < len(lines):
+        ln = lines[i].rstrip()
+        if ln.startswith('|'):
+            flush_para()
+            rows.append([c.strip() for c in ln.strip('|').split('|')])
+            i += 1
+            continue
+        flush_table()
+        if not ln.strip():
+            flush_para()
+            if in_list:
+                out.append('</ul>')
+                in_list = False
+        elif ln.startswith('#'):
+            flush_para()
+            if in_list:
+                out.append('</ul>')
+                in_list = False
+            lvl = len(ln) - len(ln.lstrip('#'))
+            out.append(f'<h{min(lvl + 1, 4)}>{inline(ln.lstrip("# ").strip())}</h{min(lvl + 1, 4)}>')
+        elif ln.strip() in ('---', '***'):
+            flush_para()
+            if in_list:
+                out.append('</ul>')
+                in_list = False
+            out.append('<hr>')
+        elif ln.lstrip().startswith(('- ', '* ')):
+            flush_para()
+            if not in_list:
+                out.append('<ul>')
+                in_list = True
+            out.append('<li>' + inline(ln.lstrip()[2:]) + '</li>')
+        else:
+            if in_list:
+                out.append('</ul>')
+                in_list = False
+            para.append(ln.strip())
+        i += 1
+    flush_para()
+    flush_table()
+    if in_list:
+        out.append('</ul>')
+    return '\n'.join(out)
+
+
+def build_policy(title, path, lead):
+    """Render a markdown document from docs/ as a site page."""
+    src = None
+    for base in (ROOT, os.path.join(ROOT, 'site')):
+        cand = os.path.join(base, 'docs', path)
+        if os.path.exists(cand):
+            src = cand
+            break
+    if src is None:
+        return None
+    with open(src, encoding='utf-8') as f:
+        text = f.read()
+    text = re.sub(r'^#[^#\n]*\n', '', text, count=1)   # drop the H1, the page has its own
+    body = (f'<main class="page policy">\n<h1 class="title">{e(title)}</h1>\n'
+            f'<p class="lead">{e(lead)}</p>\n{md_to_html(text)}\n</main>\n{FOOT}')
+    return shell((f'{title} \u2014 Still on Record', ''), body, desc=lead)
+
+
 # ---------------------------------------------------------------- artifacts
 
 
@@ -658,11 +802,29 @@ def main():
         shutil.rmtree(OUT)
     os.makedirs(os.path.join(OUT, 'record'), exist_ok=True)
     shutil.copytree(ASSETS, os.path.join(OUT, 'assets'))
+    for base in (ROOT, os.path.join(ROOT, 'site')):
+        img = os.path.join(base, 'images')
+        if os.path.isdir(img):
+            shutil.copytree(img, os.path.join(OUT, 'images'))
+            break
 
     pages = {'index.html': build_index(recs),
              'register.html': build_register(recs),
              'method.html': build_method(recs),
              'about.html': build_about(recs)}
+
+    extras = [
+        ('images.html', 'Image policy', 'image_policy.md',
+         'What may be published, what sits behind a click, and what is refused.'),
+        ('rules.html', 'Inclusion rules', 'inclusion_rules.md',
+         'The threshold an event has to meet, and how harm from a product is handled.'),
+    ]
+    for fname, title, doc, lead in extras:
+        page = build_policy(title, doc, lead)
+        if page:
+            pages[fname] = page
+        else:
+            print(f'  note: docs/{doc} not found, {fname} not generated')
     for name, content in pages.items():
         with open(os.path.join(OUT, name), 'w', encoding='utf-8') as f:
             f.write(content)

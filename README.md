@@ -1,7 +1,6 @@
 # Still on Record
 
-Static site for stillonrecord.org. CSV in git, a build script, files on a CDN. No database,
-no backend, nothing to patch.
+Static site for stillonrecord.org. CSV in git, a build script, files on a CDN.
 
 ```
 python3 build.py        # reads data/fixture_dev.csv, writes site/

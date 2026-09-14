@@ -1,4 +1,4 @@
-# Still on Record — site
+# Still on Record
 
 Static site for stillonrecord.org. CSV in git, a build script, files on a CDN. No database,
 no backend, nothing to patch.

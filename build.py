@@ -469,117 +469,116 @@ record id and the source.</p>
 def build_method(recs):
     tiers = {t: sum(1 for d in recs if d['evidence_tier'] == t) for t in ('1', '2', '3')}
     basis_rows = '\n'.join(
-        f'<li><b>{k.replace("_", " ")}</b> \u2014 {e(v.split(": ", 1)[1])}</li>'
+        f'<li><b>{k.replace("_", " ").capitalize()}.</b> {e(v.split(": ", 1)[1])}</li>'
         for k, v in BASIS.items())
 
     body = f"""<main class="page">
 <h1 class="title">Method</h1>
-<p class="lead">Every record names the specific document it rests on, states how good that
-document is, says whether historians dispute it, and says what kind of number its death
-figures are. This page is how those judgments are made.</p>
+<p class="lead">Every record names the document it rests on. It says how good that document is,
+whether historians argue about it, and what kind of number its death figures are. This page is
+how those calls get made.</p>
 
 <h2 id="threshold">What qualifies</h2>
-<p>Two tests, and both have to hold.</p>
-<ul>
-<li><b>Deliberate or knowing.</b> The harm was intended, or it was a foreseen cost that the
-actor accepted.</li>
-<li><b>Locatable with a source.</b> It can be tied to a place with a citation. If it cannot,
-it goes to <a href="register.html">the register</a>, never to deletion.</li>
-</ul>
-<p>The period floor is {YEAR_FLOOR}. That is a setting, not a research decision, and events
-below it are recorded and flagged rather than dropped.</p>
-<p>Rome Statute Article 7 is the reference for what counts as a widespread or systematic
-attack. Applying it to anything before 1998 is descriptive, not legal, and this site says so
-rather than implying a verdict that no court reached.</p>
+<p>Two tests, and both have to hold. The harm was deliberate, or it was a cost somebody foresaw
+and accepted anyway. And it can be tied to a place with a citation.</p>
+<p>When the second test fails the event isn't dropped. It goes to
+<a href="register.html">the register</a>, where it sits with a note saying what evidence would
+place it.</p>
+<p>The period starts at {YEAR_FLOOR}. That's a setting in a configuration file rather than a
+claim about history, and anything earlier gets recorded and flagged instead of thrown away.</p>
+<p>For what counts as a widespread or systematic attack, the reference is Article 7 of the Rome
+Statute. Using it on anything before 1998 is description, not law. This site says so out loud,
+because the alternative is implying a verdict that no court ever reached.</p>
 
-<h2 id="product-test">The product test</h2>
-<p>Where harm comes from a product rather than an attack, two further questions decide what
-can be mapped. Did the product deliver substantial real benefit? Was a comparable alternative
-available, known, and rejected?</p>
-<ul>
-<li><b>An alternative existed and was rejected.</b> The harm itself is mappable. Leaded petrol
-qualifies, because ethanol worked and could not be patented. So does asbestos, and white
-phosphorus in matches.</li>
-<li><b>Real benefit, no comparable alternative.</b> Only the concealment is mappable, as
-decision and evidence sites. No mortality row. Fossil fuels sit here, and so does most of
-pharmaceuticals: the wrong in Vioxx is the buried cardiovascular signal, not the existence of
-an anti-inflammatory.</li>
-<li><b>No offsetting benefit.</b> Both the harm and the concealment are mappable. Tobacco sits
-here.</li>
-</ul>
-<p>This is why the dataset holds fossil fuel source sites and no fossil fuel death toll.
-Mortality from combustion is real and large, and it is not separable from the mortality that
-fossil fuels prevented. The concealment is separable, documented and litigated.</p>
+<h2 id="product-test">Harm that comes from a product</h2>
+<p>Some of this isn't an attack at all. It's a thing that was made and sold. Two more questions
+sort those out. Did the product do real good? And was there a comparable alternative that
+somebody knew about and turned down?</p>
+<p>Leaded petrol fails the second question badly. Ethanol worked as an anti-knock agent and
+nobody could patent it, which is the whole reason tetraethyl lead won. So the harm itself is on
+the map, and so is the laboratory in Dayton where the choice was made.</p>
+<p>Fossil fuels pass both questions. Roughly half the world eats because of nitrogen fixed with
+natural gas, and for most of the twentieth century there was nothing else. So combustion isn't
+mapped here. The concealment is: the research the industry commissioned and shelved, the
+coalition whose own scientific advisers wrote that the greenhouse effect couldn't be refuted
+before that passage was cut, the communications plan that set out to make uncertainty
+conventional wisdom. Most of pharmaceuticals belongs in this group too. The wrong in Vioxx was
+the buried cardiovascular signal, not the existence of a painkiller.</p>
+<p>Tobacco has nothing on the other side of the ledger, so both the harm and the concealment
+are here.</p>
 
-<h2 id="tiers">Evidence tiers</h2>
+<h2 id="tiers">How good is the source</h2>
+<p>Three tiers, and they're about the kind of document rather than how much anyone trusts it.</p>
 <ul>
-<li><b>Tier 1</b> ({tiers['1']} records here) \u2014 a finding of fact by a body with the power
-to make one, or a primary record: court and tribunal judgments, truth commissions, state and
-perpetrator archives, government inquiries with investigative powers, peer-reviewed demographic
-reconstruction.</li>
-<li><b>Tier 2</b> ({tiers['2']}) \u2014 academic monographs, NGO reports with published
-methodology, archival work without a state mandate. Most historical records sit here
-legitimately.</li>
-<li><b>Tier 3</b> ({tiers['3']}) \u2014 journalism, survivor testimony standing alone, advocacy.
-Tier 3 is for things that are real but thinly evidenced, not for things anyone believes
-strongly.</li>
+<li><b>Tier 1.</b> {tiers['1']} records. A finding of fact by a body with the power to make one,
+or a primary record. Court and tribunal judgments, truth commissions, state and perpetrator
+archives, inquiries with investigative powers, peer-reviewed demography.</li>
+<li><b>Tier 2.</b> {tiers['2']} records. Academic monographs, NGO reports that publish their
+method, archival work without a state mandate. Plenty of solid history lives here.</li>
+<li><b>Tier 3.</b> {tiers['3']} records. Journalism, testimony standing on its own, advocacy.
+This tier is for things that are real but thinly evidenced. It isn't for things somebody
+believes strongly.</li>
 </ul>
-<p>A common error is treating a report about a judgment as the judgment. The judgment gets
-cited, with the page.</p>
+<p>The commonest mistake is citing an article about a judgment instead of the judgment. Cite
+the judgment, with the page.</p>
 
 <h2 id="tolls">Death figures</h2>
-<p>Never a single number. Every figure is a range with the estimator named and a basis
-attached, and the basis says what kind of number it is.</p>
+<p>Never one number. Every figure is a range, the estimator is named, and a basis says what
+kind of number you're looking at.</p>
 <ul>
 {basis_rows}
 </ul>
-<p><b>These values cannot be added together.</b> Adding an annual epidemiological attribution
-to a count of exhumed bodies produces a number that means nothing, which is why this site has
-no total, no ranking and no score. Non-fatal harm is recorded separately with a measure
-attached, because what is being counted differs by record: people exposed, children with
-embryopathy, IQ points lost.</p>
+<p>You can't add these together. An annual epidemiological attribution and a count of exhumed
+bodies are different objects, and summing them produces nothing. That's why this site has no
+total, no ranking and no score, and why it never will.</p>
+<p>Harm that isn't death gets recorded separately, with a note saying what's being counted.
+People exposed, children born with thalidomide embryopathy, IQ points lost across a population.
+The unit changes from record to record, so the unit is always shown.</p>
 
-<h2 id="density">Why record density is not severity</h2>
-<p>The Holocaust has 44,000 documented sites because the USHMM spent decades cataloguing them.
-The Great Leap Forward famine, which killed more people, has a few dozen, because most Chinese
-provincial archives have never been opened. A map that ignores this reads as a claim about
-history when it is really a claim about record-keeping.</p>
-<p>So the dataset carries a completeness field, filled only where an external dataset defines
-the answer. Guessing it for unchecked records would repeat the error it exists to prevent.
-Where a region looks empty on the map, the first question is which archives are shut.</p>
+<h2 id="density">Why a crowded map isn't a worse place</h2>
+<p>The Holocaust has 44,000 documented sites. That's because the United States Holocaust
+Memorial Museum spent decades cataloguing them, and the number reflects the cataloguing.</p>
+<p>The Great Leap Forward famine killed more people and has a few dozen. Most Chinese
+provincial archives have never been opened.</p>
+<p>Put those two on the same map without saying anything and it reads as a claim about history
+when it's really a claim about record-keeping. So every record carries a completeness field,
+filled in only where an external dataset settles the question. Guessing it for the rest would
+repeat the exact error the field exists to catch. When a region looks empty here, the first
+question to ask is which archives are shut.</p>
 
-<h2 id="layers">Layers and pins</h2>
-<p>Events are on by default. Source sites, meaning rooms and works where decisions were taken,
-are off by default and drawn as a square rather than a circle. A pin on a boardroom must never
-read as a pin on a grave. Unlocated records are never pinned at all; they live in the register.</p>
-<p>Where several records fall in the same spot at low zoom, one record stands in for the group
-and the rest are hidden until you zoom in. The stand-in is chosen by a fixed rule, so the same
-view always shows the same record: parent campaign first, then evidence tier, then death
-figure, then earliest year. Cluster bubbles with counts were rejected, because a bubble reading
-44,000 next to one reading 12 invites exactly the conclusion the completeness field exists to
-prevent.</p>
+<h2 id="layers">Pins</h2>
+<p>Events are on by default. Source sites are off. Those are the rooms and works where
+decisions were taken, and they're drawn as squares rather than circles, because a pin on a
+boardroom must never read as a pin on a grave. Records with no location aren't pinned at all.
+They're in the register.</p>
+<p>Where several records land on the same spot at low zoom, one stands in for the group and the
+others stay hidden until you zoom in. A fixed rule picks the stand-in, so the same view always
+shows you the same record: parent campaign first, then evidence tier, then death figure, then
+earliest year.</p>
+<p>Cluster bubbles with counts were rejected. A bubble reading 44,000 next to one reading 12
+invites precisely the conclusion the completeness field exists to prevent.</p>
 
 <h2 id="verification">Verification</h2>
-<p>The core rule is that nobody cites a source they have not opened. The seed records name
-documents that exist and are relevant; they were assembled from research, not from reading each
-one end to end. Until someone opens the named document and checks the event, the place, the
-dates, the perpetrator and the figure separately, the record carries its seeded state on its
-own page.</p>
-<p>A correction that moves a record from confirmed to contested is a success, not a defeat.</p>
+<p>Nobody cites a source they haven't opened. That's the rule the whole project rests on.</p>
+<p>The seeded records name documents that exist and are relevant, but they were assembled from
+research rather than from reading each one end to end. Until somebody opens the named document
+and checks the event, the place, the dates, the perpetrator and the figure separately, the
+record says so on its own page.</p>
+<p>A correction that moves a record from confirmed to contested is a good day, not a bad one.</p>
 
 <h2 id="images">Images</h2>
-<p>Images are published where they document something the record needs: scale, conditions,
-method, the state of a place. Difficulty is not the test, purpose is. Photographs of the dead,
-of injury and of killing in progress are published where they meet that test, and they sit
-behind a control that says what they show before it opens. They never appear on the map, in a
-preview or in a search result. The full policy, including what is refused outright, is on the
-<a href="images.html">image policy</a> page.</p>
+<p>Images go up where they document something the record needs. Scale, conditions, method, the
+state of a place. Difficulty isn't the test, purpose is.</p>
+<p>Photographs of the dead, of injury, of killing in progress: published, where they meet that
+test, behind a control that tells you what you're about to see. They never turn up on the map,
+in a preview or in a search result, so nobody arrives at one by accident. What's refused
+outright, and why, is on the <a href="images.html">image policy</a> page.</p>
 
 <h2>Corrections</h2>
-<p>Sourced corrections are acted on. Unsourced ones are not argued with. Send the record id,
-what is wrong, and the source, to
+<p>Sourced corrections get acted on. Unsourced ones don't get argued with. Send the record id,
+what's wrong, and the source, to
 <a href="mailto:corrections@stillonrecord.org">corrections@stillonrecord.org</a>. Every change
-is logged publicly with its date and its origin.</p>
+is logged in public with its date and where it came from.</p>
 </main>
 {FOOT}"""
     return shell(('Method \u2014 Still on Record', 'method.html'), body,
@@ -595,57 +594,66 @@ def build_about(recs):
     located = sum(1 for d in recs if d['lat'] is not None)
     body = f"""<main class="page">
 <h1 class="title">About</h1>
-<p class="lead">Still on Record is an index of events where people were harmed deliberately, or
-where the harm was a foreseen cost that someone accepted. It covers genocide and state killing,
-colonial conquest, slavery and forced labour, famine used as a weapon, forced displacement,
-religious persecution, institutional abuse, and industrial harm where the producer knew.</p>
+<p class="lead">Still on Record is an index of events where people were harmed on purpose, or
+where somebody worked out the harm in advance and went ahead anyway.</p>
 
-<h2>What it is not</h2>
-<p>Not a ranking. There is no total, no leaderboard and no score. The categories are not
-comparable and the death figures are not summable. Not a verdict either: where proceedings are
-live, the record names the case and stops there.</p>
+<p>That covers a lot of ground. Genocide and state killing. Colonial conquest. Slavery and
+forced labour. Famine used as a weapon. Forced displacement, religious persecution,
+institutional abuse. And industrial harm, where the company knew and kept going, which turns
+out to be one of the best documented categories of all, because discovery forces the internal
+memos into the public record.</p>
 
-<h2>Status</h2>
-<p>Seed stage. This build carries {n} records, of which {located} have coordinates and appear on
-the map. The rest are listed and not plotted. Every record names a real and relevant source, and
-none of those sources has yet been opened and checked one by one. Coordinates are approximate
-and unverified. Records carry their state on their own page. Read it before citing anything
-here.</p>
+<h2>What it isn't</h2>
+<p>It isn't a ranking. There's no total and no score, and there won't be. The categories don't
+compare and the death figures can't be added up, for reasons the <a href="method.html#tolls">
+method page</a> goes into.</p>
+<p>It isn't a verdict either. Where proceedings are live, the record names the case and stops
+there.</p>
+
+<h2>Where it's up to</h2>
+<p>Seed stage, and honestly so. There are {n} records here, {located} of them with coordinates.
+Every one names a real and relevant source. Not one of those sources has yet been opened and
+checked line by line, and the coordinates were placed from general knowledge rather than a
+gazetteer.</p>
+<p>Records carry their own state on their own page. Read it before you cite anything. The work
+of the coming months is verification, and the site will say so until it's done.</p>
 
 <h2>The name</h2>
-<p>These events are still on record. The documents survive, the judgments were handed down, the
-registers were kept. Denial works by betting that nobody will go and look. This project goes
-and looks, and shows its working.</p>
+<p>These events are still on record. The documents survived. The judgments were handed down,
+the registers were kept, the photographs were taken. Denial works by betting that nobody will
+go and look.</p>
+<p>So this goes and looks, and shows its working.</p>
 
 <h2>Who runs it</h2>
-<p>A stichting registered in the Netherlands. Board, policy plan and annual figures are
-published. No advertising, no paywall, no sponsored content. Hosting is covered by donations;
-research and development work is funded by grants and commissioned projects, and the accounts
-are public.</p>
+<p>A stichting registered in the Netherlands. The board, the policy plan and the annual figures
+are published.</p>
+<p>No advertising, no paywall, nothing sponsored. Donations cover the hosting, which is close
+to nothing because the site is static files. Research and development are funded by grants and
+commissioned work, and the accounts are public. If you want to know who pays for this, the
+answer is on the page rather than in an email.</p>
 
 <h2>Licence</h2>
-<p>Data under the Open Database License, text and documentation under CC BY-SA 4.0. Free for
-any use, including commercial, with attribution and share-alike. If you build on it, the result
-stays open. The whole dataset is
-<a href="data/dataset.csv">one file you can download</a>, and every record is also available as
-JSON.</p>
+<p>The data is under the Open Database License and the text under CC BY-SA 4.0. Use it for
+anything, including commercially. Credit it, and keep whatever you build from it open.</p>
+<p>The whole dataset is <a href="data/dataset.csv">a single file you can download</a>, and
+every record is also there as JSON.</p>
 
-<h2>Credit where it is owed</h2>
-<p>This project exists because gulag.online showed it could be done. It depends on the work of
-Memorial, the USHMM, DC-Cam, the University of Newcastle, SlaveVoyages, the UCSF Industry
-Documents Library, ToxicDocs, and the truth commissions and tribunals whose findings make most
-of these records possible.</p>
-<p>Basemap tiles from <a href="https://openfreemap.org">OpenFreeMap</a>, schema by
-<a href="https://www.openmaptiles.org/">OpenMapTiles</a>, data by
+<h2>Standing on other people's work</h2>
+<p>This exists because gulag.online showed it could be done.</p>
+<p>It leans on Memorial, the United States Holocaust Memorial Museum, the Documentation Center
+of Cambodia, the University of Newcastle's frontier massacre project, SlaveVoyages, the UCSF
+Industry Documents Library and ToxicDocs. Above all it leans on the truth commissions and the
+tribunals, whose findings are what make most of these records possible at all.</p>
+<p>Basemap tiles come from <a href="https://openfreemap.org">OpenFreeMap</a>, the schema from
+<a href="https://www.openmaptiles.org/">OpenMapTiles</a>, and the underlying data from
 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.</p>
 
 <h2>Corrections</h2>
-<p>Sourced corrections are acted on and logged publicly.
+<p>Sourced corrections get acted on and logged in public.
 <a href="mailto:corrections@stillonrecord.org">corrections@stillonrecord.org</a></p>
 </main>
 {FOOT}"""
     return shell(('About \u2014 Still on Record', 'about.html'), body)
-
 
 
 # ---------------------------------------------------------------- policy pages

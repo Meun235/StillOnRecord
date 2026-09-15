@@ -138,8 +138,7 @@ def validate(recs):
         if d.get('quote') and len(d['quote'].split()) > 45:
             errors.append(f'{i}: quote is {len(d["quote"].split())} words, keep it short')
         if d['sy'] is None:
-            errors.append(f'{i}: start_year is empty ({d.get("event_name", "")[:40]})')
-            continue
+            continue          # undated records are allowed, see years() and build_index
         if d['ey'] is None:
             d['ey'] = d['sy']
         if d['ey'] < d['sy']:
@@ -155,6 +154,8 @@ def validate(recs):
 
 
 def years(d):
+    if d['sy'] is None:
+        return 'Date not recorded'
     return str(d['sy']) if d['sy'] == d['ey'] else f"{d['sy']}\u2013{d['ey']}"
 
 
@@ -233,12 +234,14 @@ def build_index(recs):
     slim = []
     for d in recs:
         o = {k: d[k] for k in fields if d.get(k)}
-        o['sy'], o['ey'] = d['sy'], d['ey']
+        if d['sy'] is not None:
+            o['sy'], o['ey'] = d['sy'], d['ey']
         if d['lat'] is not None:
             o['lat'], o['lon'] = d['lat'], d['lon']
         slim.append(o)
 
     located = sum(1 for d in recs if d['lat'] is not None)
+    undated = sum(1 for d in recs if d['sy'] is None)
     unver = sum(1 for d in recs if d.get('coord_source') == 'unverified_ai'
                 or d.get('coord_source') == 'fixture_dev')
 
@@ -248,7 +251,8 @@ def build_index(recs):
   {len(recs)} records are seeded and each one names a real, relevant source, but nobody has
   yet opened those sources to confirm they say what the record claims. {located} records carry
   coordinates and {unver} of those are unchecked, placed from general knowledge rather than a
-  gazetteer. Verification and geocoding are the work of the coming weeks, and records will
+  gazetteer. {undated} carry no date, so the year filter leaves them showing rather than
+  hiding them. Verification and geocoding are the work of the coming weeks, and records will
   carry their state on their own page as it changes. Use this as a research lead, not a
   citation.</span>
   <a href="method.html#verification">How verification works</a>

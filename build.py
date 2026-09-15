@@ -79,8 +79,14 @@ def load():
     recs = []
     for r in rows:
         d = {k: (v or '').strip() for k, v in r.items()}
-        d['sy'] = int(d['start_year'])
-        d['ey'] = int(d['end_year'] or d['start_year'])
+        try:
+            d['sy'] = int(d['start_year'])
+        except ValueError:
+            d['sy'] = None
+        try:
+            d['ey'] = int(d['end_year'] or d['start_year'])
+        except ValueError:
+            d['ey'] = d['sy']
         if d['lat'] and d['lon']:
             d['lat'] = round(float(d['lat']), 5)
             d['lon'] = round(float(d['lon']), 5)
@@ -90,7 +96,7 @@ def load():
             d['register_reason'] = reg[d['id']]['register_reason']
             d['unlock'] = reg[d['id']]['what_would_unlock_it']
         recs.append(d)
-    recs.sort(key=lambda x: (x['sy'], x['id']))
+    recs.sort(key=lambda x: (x['sy'] if x['sy'] is not None else 9999, x['id']))
     return recs
 
 
@@ -102,7 +108,7 @@ def validate(recs):
         if i in seen:
             errors.append(f'{i}: duplicate id')
         seen.add(i)
-        for field in ('key_source', 'evidence_tier', 'event_name', 'start_year'):
+        for field in ('key_source', 'evidence_tier', 'event_name'):
             if not d.get(field):
                 errors.append(f'{i}: missing {field}')
         if d['toll_basis'] == 'not_quantified' and d['deaths_low']:
@@ -131,6 +137,11 @@ def validate(recs):
             errors.append(f'{i}: quote present with no quote_speaker')
         if d.get('quote') and len(d['quote'].split()) > 45:
             errors.append(f'{i}: quote is {len(d["quote"].split())} words, keep it short')
+        if d['sy'] is None:
+            errors.append(f'{i}: start_year is empty ({d.get("event_name", "")[:40]})')
+            continue
+        if d['ey'] is None:
+            d['ey'] = d['sy']
         if d['ey'] < d['sy']:
             errors.append(f'{i}: end_year before start_year')
         if d['sy'] < YEAR_FLOOR:

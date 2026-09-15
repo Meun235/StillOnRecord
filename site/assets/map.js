@@ -29,7 +29,8 @@ const CAT_SHORT = { 'corporate and industrial harm': 'industrial harm',
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g,
   c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const num = n => n ? (+n).toLocaleString('en-GB') : '';
-const yrs = d => d.sy === d.ey ? String(d.sy) : d.sy + '\u2013' + d.ey;
+const yrs = d => d.sy === undefined ? 'Date not recorded'
+  : d.sy === d.ey ? String(d.sy) : d.sy + '\u2013' + d.ey;
 const toll = d => !d.deaths_low ? 'No defensible figure'
   : num(d.deaths_low) + (d.deaths_high ? '\u2013' + num(d.deaths_high) : '');
 const reduced = () => window.matchMedia('(prefers-reduced-motion:reduce)').matches;
@@ -132,7 +133,7 @@ function representatives() {
       (parents.has(b.event_name) ? 1 : 0) - (parents.has(a.event_name) ? 1 : 0)
       || (+a.evidence_tier || 9) - (+b.evidence_tier || 9)
       || (+(b.deaths_high || b.deaths_low) || 0) - (+(a.deaths_high || a.deaths_low) || 0)
-      || a.sy - b.sy || (a.id < b.id ? -1 : 1));
+      || (a.sy ?? 9999) - (b.sy ?? 9999) || (a.id < b.id ? -1 : 1));
     out.push({ rep: ranked[0], n: arr.length });
   }
   return out;
@@ -200,7 +201,7 @@ function detail(d) {
 }
 
 function draw() {
-  const rows = DATA.filter(pass).sort((a, b) => a.sy - b.sy || (a.id < b.id ? -1 : 1));
+  const rows = DATA.filter(pass).sort((a, b) => (a.sy ?? 9999) - (b.sy ?? 9999) || (a.id < b.id ? -1 : 1));
   document.getElementById('nShown').textContent = rows.length;
   document.getElementById('nReg').textContent = rows.filter(d => !plottable(d)).length;
   if (!rows.length) {

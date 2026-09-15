@@ -113,6 +113,8 @@ def validate(recs):
             errors.append(f'{i}: unmapped geometry outside the register layer')
         if d['layer'] == 'register' and d['default_visible'] == 'TRUE':
             errors.append(f'{i}: register row marked visible by default')
+        if d.get('description') and len(d['description'].split()) > 350:
+            errors.append(f'{i}: description is {len(d["description"].split())} words, cap is 350')
         if d.get('image_file'):
             for f2 in ('image_caption', 'image_credit', 'image_licence'):
                 if not d.get(f2):
@@ -215,7 +217,7 @@ def build_index(recs):
               'country_today perpetrator perpetrator_today succession_type target_group '
               'category deaths_low deaths_high toll_basis affected_low affected_high '
               'affected_measure toll_note evidence_tier status documentation_completeness '
-              'key_source notes quote quote_speaker quote_source '
+              'key_source description notes quote quote_speaker quote_source '
               'register_reason unlock').split()
     slim = []
     for d in recs:
@@ -348,6 +350,9 @@ def build_record(d, recs):
     dl = '\n'.join(f'  <dt>{k}</dt><dd>{v}</dd>' for k, v in rows)
 
     prose = ''
+    if d.get('description'):
+        paras = [p.strip() for p in d['description'].split('\n') if p.strip()]
+        prose += '<div class="what">' + ''.join(f'<p>{e(x)}</p>' for x in paras) + '</div>'
     if d.get('image_file'):
         cred = (f'<span class="credit">{e(d["image_credit"])}'
                 f' \u00b7 {e(d["image_licence"].replace("_", " "))}</span>')

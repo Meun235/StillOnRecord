@@ -35,6 +35,11 @@ YEAR_FLOOR = 1500          # config value, not a research decision
 YEAR_CEIL = date.today().year
 
 DOMAIN = 'stillonrecord.org'   # written to dist/CNAME on every build
+
+# Analytics. Empty string means none, and no script is emitted at all.
+# Set to your GoatCounter endpoint, e.g. 'https://stillonrecord.goatcounter.com/count'
+# Self-hosting later is a change to this line and nothing else.
+ANALYTICS = 'https://stillonrecord.goatcounter.com/count'
 TAGLINE = 'A sourced map of deliberately caused mass suffering, 1500 to now.'
 
 BASIS = {
@@ -179,6 +184,9 @@ def affected(d):
 
 def shell(title, body, desc=TAGLINE, depth=0, body_class='', extra_head='', extra_js=''):
     up = '../' * depth
+    ANALYTICS_TAG = ('' if not ANALYTICS else
+                     '<script data-goatcounter="' + ANALYTICS + '" async '
+                     'src="//gc.zgo.at/count.js"></script>\n')
     nav = [('index.html', 'Map'), ('register.html', 'Register'), ('method.html', 'Method'),
            ('about.html', 'About')]
     parts = []
@@ -193,9 +201,7 @@ def shell(title, body, desc=TAGLINE, depth=0, body_class='', extra_head='', extr
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>{e(title[0])}</title>
 <meta name="description" content="{e(desc)}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;450;600&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{up}assets/fonts.css">
 <link rel="stylesheet" href="{up}assets/site.css">
 {extra_head}</head>
 <body{f' class="{body_class}"' if body_class else ''}>
@@ -205,7 +211,7 @@ def shell(title, body, desc=TAGLINE, depth=0, body_class='', extra_head='', extr
   <nav>{links}</nav>
 </header>
 {body}
-{extra_js}</body>
+{extra_js}{ANALYTICS_TAG}</body>
 </html>
 """
 
@@ -313,8 +319,8 @@ def build_index(recs):
   </div>
 </div>
 """
-    head = ('<link href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css" rel="stylesheet">\n'
-            '<script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>\n')
+    head = ('<link href="assets/vendor/maplibre-gl.css" rel="stylesheet">\n'
+            '<script src="assets/vendor/maplibre-gl.js"></script>\n')
     js = ('<script>window.RECORDS=' + json.dumps(slim, separators=(',', ':'),
                                                  ensure_ascii=False) + ';</script>\n'
           '<script src="assets/basemap.js"></script>\n'
@@ -612,6 +618,20 @@ is logged in public with its date and where it came from.</p>
 def build_about(recs):
     n = len(recs)
     located = sum(1 for d in recs if d['lat'] is not None)
+    if ANALYTICS:
+        privacy = (
+            '<p>Visitor counts come from GoatCounter, which is open source, hosted in the EU '
+            'and set no cookies. It records the page, where you came from, and your browser. '
+            'Your IP address is hashed with a salt that rotates through the day so that repeat '
+            'visits can be counted, and the address itself is never stored.</p>'
+            '<p>Nothing is kept on your device, nothing is shared with anyone, and no profile '
+            'is built. There is no consent banner because there is nothing to consent to.</p>'
+            '<p>People read this site from places where reading it is not a neutral act. That '
+            'is the reason for the choice, and the reason there is no more than this.</p>')
+    else:
+        privacy = ('<p>Nothing. No analytics, no cookies, no logging. The site is a set of '
+                   'static files on a content delivery network, and it neither asks for nor '
+                   'stores anything about the people who read it.</p>')
     body = f"""<main class="page">
 <h1 class="title">About</h1>
 <p class="lead">Still on Record is an index of events where people were harmed on purpose, or
@@ -664,9 +684,15 @@ every record is also there as JSON.</p>
 of Cambodia, the University of Newcastle's frontier massacre project, SlaveVoyages, the UCSF
 Industry Documents Library and ToxicDocs. Above all it leans on the truth commissions and the
 tribunals, whose findings are what make most of these records possible at all.</p>
+<p>Type is IBM Plex, under the SIL Open Font License, served from this site rather than from
+Google. The map library is MapLibre GL, BSD licensed, also served from here. Nothing on these
+pages calls out to a third party except the map tiles and the visitor count.</p>
 <p>Basemap tiles come from <a href="https://openfreemap.org">OpenFreeMap</a>, the schema from
 <a href="https://www.openmaptiles.org/">OpenMapTiles</a>, and the underlying data from
 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.</p>
+
+<h2>What this site knows about you</h2>
+{privacy}
 
 <h2>Corrections</h2>
 <p>Sourced corrections get acted on and logged in public.
@@ -801,12 +827,37 @@ def write_artifacts(recs):
     with open(os.path.join(d_out, 'search.json'), 'w', encoding='utf-8') as f:
         json.dump(search, f, separators=(',', ':'), ensure_ascii=False)
 
+    NOTICE = {
+        'source': 'Still on Record, https://stillonrecord.org',
+        'licence': 'ODbL 1.0, https://opendatacommons.org/licenses/odbl/1-0/',
+        'terms': ('Free to use, including commercially. You must credit Still on Record with a '
+                  'link, and any adapted database you make public must be offered under ODbL '
+                  'as well.'),
+        'retrieved': date.today().isoformat(),
+    }
     for d in recs:
         rec = {k: v for k, v in d.items() if v not in ('', None)}
+        rec['_attribution'] = NOTICE
         with open(os.path.join(d_out, 'entries', d['id'] + '.json'), 'w', encoding='utf-8') as f:
             json.dump(rec, f, indent=1, ensure_ascii=False)
 
     shutil.copyfile(SOURCE, os.path.join(d_out, 'dataset.csv'))
+    with open(os.path.join(d_out, 'README.txt'), 'w', encoding='utf-8') as f:
+        f.write(
+            'Still on Record\nhttps://stillonrecord.org\n\n'
+            'This dataset is licensed under the Open Database License 1.0.\n'
+            'https://opendatacommons.org/licenses/odbl/1-0/\n\n'
+            'You may use it for anything, including commercially. Three conditions:\n\n'
+            '  1. Credit Still on Record, with a link to stillonrecord.org.\n'
+            '  2. If you publicly use an adapted version of this database, offer that\n'
+            '     adapted database under ODbL too.\n'
+            '  3. If you distribute it with a technical restriction on access, also\n'
+            '     supply an unrestricted version.\n\n'
+            'Suggested citation:\n'
+            '  Still on Record (stillonrecord.org), record EV####, retrieved '
+            + date.today().isoformat() + ', ODbL 1.0.\n\n'
+            'Records are seeded and largely unverified. Each one names its source.\n'
+            'Check the source before relying on anything here.\n')
 
 
 # ---------------------------------------------------------------- main

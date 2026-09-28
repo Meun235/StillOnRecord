@@ -35,6 +35,7 @@ const yrs = d => d.sy === undefined ? 'Date not recorded'
   : d.sy === d.ey ? String(d.sy) : d.sy + '\u2013' + d.ey;
 const toll = d => !d.deaths_low ? 'No defensible figure'
   : num(d.deaths_low) + (d.deaths_high ? '\u2013' + num(d.deaths_high) : '');
+const stop = t => { t = String(t || '').trim(); return /[.!?]\)?$/.test(t) ? t : t + '.'; };
 const reduced = () => window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 
 DATA.forEach(d => {
@@ -215,8 +216,8 @@ function detail(d) {
       ${d.perpetrator_today ? `<dt>Entity today</dt><dd>${esc(d.perpetrator_today)}<span class="basis">${SUCC[d.succession_type] || ''}</span></dd>` : ''}
       ${d.notes ? `<dt>Note</dt><dd>${esc(d.notes)}</dd>` : ''}
     </dl>
-    ${d.register_reason ? `<div class="reg"><p>Not on the map: ${esc(d.register_reason)}.</p>
-      <p>What would place it: ${esc(d.unlock)}.</p></div>` : ''}
+    ${d.register_reason ? `<div class="reg"><p>Not on the map: ${esc(stop(d.register_reason))}</p>
+      <p>What would place it: ${esc(stop(d.unlock))}</p></div>` : ''}
     <a class="cta" href="record/${d.id}.html">Read the full record</a>
   </div>`;
 }

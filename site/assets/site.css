@@ -5,7 +5,7 @@
   --paper:#EBEDE9; --card:#F6F7F4; --sunk:#E0E4DF;
   --ink:#1F2527; --ink-soft:#616B68;
   --rule:#CDD2CC; --rule-soft:#DCE0DA;
-  --confirmed:#4C7560; --contested:#A8752A; --ongoing:#3E679A;
+  --confirmed:#2F5690; --contested:#B07A2A; --ongoing:#9A6CC4;
   --focus:#2E5E4E;
   --sans:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
   --serif:"IBM Plex Serif",Georgia,serif;
@@ -16,7 +16,7 @@
     --paper:#141818; --card:#1D2222; --sunk:#101414;
     --ink:#E2E7E4; --ink-soft:#8D9895;
     --rule:#323938; --rule-soft:#262C2B;
-    --confirmed:#7FAE95; --contested:#D4A456; --ongoing:#82A9DA;
+    --confirmed:#3A66B0; --contested:#BA8A3C; --ongoing:#A57ED8;
     --focus:#6FB79A;
   }
 }

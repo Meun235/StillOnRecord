@@ -145,8 +145,35 @@ def load():
             d['register_reason'] = reg[d['id']]['register_reason']
             d['unlock'] = reg[d['id']]['what_would_unlock_it']
         recs.append(d)
+    spread_shared_spots(recs)
     recs.sort(key=lambda x: (x['sy'] if x['sy'] is not None else 9999, x['id']))
     return recs
+
+
+SPREAD_M = 50        # metres between neighbours when records share one exact coordinate
+
+
+def spread_shared_spots(recs):
+    """Records on exactly the same coordinates would sit on top of each other on every map,
+    at every zoom. Place them evenly on a small circle around the shared point instead,
+    SPREAD_M apart, in id order, first one due north. The source coordinate is kept in
+    coord_shared so the record can say it was moved and from where."""
+    spots = {}
+    for d in recs:
+        if d['lat'] is not None:
+            spots.setdefault((d['lat'], d['lon']), []).append(d)
+    for (lat, lon), group in spots.items():
+        n = len(group)
+        if n < 2:
+            continue
+        radius = (SPREAD_M / 2) / math.sin(math.pi / n)   # chord between neighbours = SPREAD_M
+        for i, d in enumerate(sorted(group, key=lambda x: x['id'])):
+            a = 2 * math.pi * i / n
+            d['coord_shared'] = f'{lat}, {lon}'
+            d['coord_shared_n'] = n
+            d['coord_moved_m'] = round(radius)
+            d['lat'] = round(lat + radius * math.cos(a) / 111320, 6)
+            d['lon'] = round(lon + radius * math.sin(a) / (111320 * math.cos(math.radians(lat))), 6)
 
 
 def validate(recs):
@@ -474,12 +501,20 @@ def build_record(d, recs):
                   if d['completeness_note'] else '')))
     rows.append(('Site role', e(ROLE.get(d['site_role'], d['site_role'] or 'Not recorded'))))
     rows.append(('Geometry', e(d['geometry_type'])))
+    if mapped:
+        moved = ''
+        if d.get('coord_shared'):
+            moved = (f'<span class="basis">The source places this and {d["coord_shared_n"] - 1} other '
+                     f'record{"s" if d["coord_shared_n"] > 2 else ""} at the same point '
+                     f'({e(d["coord_shared"])}). It is shown {d["coord_moved_m"]} m from there so '
+                     'the pins don\u2019t overlap.</span>')
+        rows.append(('Coordinates', f'{d["lat"]:.5f}, {d["lon"]:.5f}' + moved))
     if d['parent_campaign']:
         rows.append(('Part of', e(d['parent_campaign'])))
     rows.append(('Record id', e(d['id'])))
 
     # Two columns of facts on a wide screen; long values take the full width.
-    full = {'Key source', 'Entity today', 'Documentation', 'Deaths'}
+    full = {'Key source', 'Entity today', 'Documentation', 'Deaths', 'Coordinates'}
     dl = '\n'.join('  <div%s><dt>%s</dt><dd>%s</dd></div>' %
                    (' class="full"' if k in full else '', k, v) for k, v in rows)
 

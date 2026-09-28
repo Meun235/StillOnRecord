@@ -110,9 +110,9 @@ Everything is in `:root` at the top of `assets/site.css`. Dark mode is the same 
 | `--ink-soft` | `#616B68` | secondary text |
 | `--rule` | `#CDD2CC` | borders |
 | `--rule-soft` | `#DCE0DA` | row dividers |
-| `--confirmed` | `#5C6B64` | status: confirmed |
-| `--contested` | `#8A6A2F` | status: historians disagree |
-| `--ongoing` | `#3D5F79` | status: before the courts |
+| `--confirmed` | `#4C7560` | status: confirmed |
+| `--contested` | `#A8752A` | status: historians disagree |
+| `--ongoing` | `#3E679A` | status: before the courts |
 | `--focus` | `#2E5E4E` | focus ring |
 
 Basemap colours are separate, in `PALETTE` in `assets/basemap.js`, because MapLibre can't read CSS variables. Keep the two in step by hand.

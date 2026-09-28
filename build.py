@@ -340,12 +340,20 @@ def build_index(recs):
       <button id="t-src" aria-pressed="false">Source sites</button>
     </div>
     <div class="key">
-      <span class="sw" style="background:var(--confirmed)"></span>Confirmed
-      <span class="sw" style="background:var(--contested)"></span>Historians disagree
-      <span class="sw" style="background:var(--ongoing)"></span>Before the courts<br>
-      <span class="sw sq"></span>A room where decisions were taken, not a site of harm.
-      A dashed ring covers an area rather than a point. A thin outer ring means more records
-      underneath, so zoom in. Unlocated records stay in the list and never get a pin.
+      <p class="kh">Status</p>
+      <ul>
+        <li><i class="ki dot" style="--c:var(--confirmed)"></i>Confirmed</li>
+        <li><i class="ki dot" style="--c:var(--contested)"></i>Historians disagree</li>
+        <li><i class="ki dot" style="--c:var(--ongoing)"></i>Before the courts</li>
+      </ul>
+      <p class="kh">Shape</p>
+      <ul>
+        <li><i class="ki dot"></i>Site of harm</li>
+        <li><i class="ki sq"></i>Where decisions were taken</li>
+        <li><i class="ki area"></i>Covers an area, not a point</li>
+        <li><i class="ki more"></i>More records here, zoom in</li>
+      </ul>
+      <p class="kn">Records with no location are in the list only.</p>
     </div>
     <div class="mapmsg" id="mapmsg" hidden>
       <button class="mapmsg-x" id="mapmsg-x" aria-label="Dismiss">\u00d7</button>

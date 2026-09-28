@@ -340,12 +340,20 @@ def build_index(recs):
       <button id="t-src" aria-pressed="false">Source sites</button>
     </div>
     <div class="key">
-      <span class="sw" style="background:var(--confirmed)"></span>Confirmed
-      <span class="sw" style="background:var(--contested)"></span>Historians disagree
-      <span class="sw" style="background:var(--ongoing)"></span>Before the courts<br>
-      <span class="sw sq"></span>A room where decisions were taken, not a site of harm.
-      A dashed ring covers an area rather than a point. A thin outer ring means more records
-      underneath, so zoom in. Unlocated records stay in the list and never get a pin.
+      <p class="kh">Status</p>
+      <ul>
+        <li><span class="mk" data-st="confirmed" data-role="point" aria-hidden="true"><span class="dot"></span></span>Confirmed</li>
+        <li><span class="mk" data-st="contested" data-role="point" aria-hidden="true"><span class="dot"></span></span>Historians disagree</li>
+        <li><span class="mk" data-st="ongoing_adjudication" data-role="point" aria-hidden="true"><span class="dot"></span></span>Before the courts</li>
+      </ul>
+      <p class="kh">Shape</p>
+      <ul class="shape">
+        <li><span class="mk" data-st="confirmed" data-role="point" aria-hidden="true"><span class="dot"></span></span>Site of harm</li>
+        <li><span class="mk" data-st="confirmed" data-role="source" aria-hidden="true"><span class="dot"></span></span>Where decisions were taken</li>
+        <li><span class="mk" data-st="confirmed" data-role="area" aria-hidden="true"><span class="dot"></span></span>Covers an area, not a point</li>
+        <li><span class="mk" data-st="confirmed" data-role="point" aria-hidden="true"><span class="ring"></span><span class="dot"></span></span>More records here, zoom in</li>
+      </ul>
+      <p class="kn">Records with no location are in the list only.</p>
     </div>
     <div class="mapmsg" id="mapmsg" hidden>
       <button class="mapmsg-x" id="mapmsg-x" aria-label="Dismiss">\u00d7</button>

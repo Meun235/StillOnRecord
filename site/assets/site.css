@@ -230,6 +230,53 @@ dl.record dd{margin:0;overflow-wrap:anywhere}
 .actions a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);
   padding-bottom:1px}
 .actions a:hover{border-color:var(--ink)}
+/* record pages: the record on the left, a map and related records beside it */
+.page.rec{max-width:1180px;display:grid;grid-template-columns:minmax(0,1fr) 340px;
+  grid-template-areas:"head side" "body side";column-gap:52px;align-items:start}
+.rec-head{grid-area:head}
+.rec-body{grid-area:body}
+.rec-side{grid-area:side;position:sticky;top:20px;max-height:calc(100vh - 40px);overflow:auto;
+  display:flex;flex-direction:column;gap:20px;padding-bottom:4px}
+.rec-side>*{flex-shrink:0}
+.rec-side .siblings{padding:0;max-width:none}
+.minimap{position:relative;height:280px;border:1px solid var(--rule);background:var(--sunk)}
+.minimap-msg{display:none;position:absolute;inset:auto 12px 12px;z-index:3;margin:0;
+  background:var(--card);border:1px solid var(--rule);padding:8px 10px;font-size:12.5px;
+  line-height:1.5;color:var(--ink-soft)}
+.minimap.failed .minimap-msg{display:block}
+.minimap .mk{text-decoration:none}
+.minimap-cap{margin:-12px 0 0;font-size:12px;line-height:1.5;color:var(--ink-soft)}
+.nomap{margin:0;background:var(--sunk);border:1px solid var(--rule);padding:11px 14px;
+  font-size:13px;line-height:1.55;color:var(--ink-soft)}
+.nomap b{color:var(--ink);font-weight:450}
+.side-h{font-family:var(--sans);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-soft);margin:0 0 4px;font-weight:400}
+.rel .siblings li{padding:7px 0}
+.rel .siblings a{font-size:14px}
+.rel .siblings .m{font-size:12px}
+.rel .siblings .more a{font-family:var(--sans);font-size:12.5px}
+.rec-side .actions{flex-direction:column;gap:8px;margin-top:0;padding-top:14px;font-size:13px}
+.rec-side .actions a{align-self:flex-start}
+/* the facts, two to a row */
+.rec dl.record{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px 32px;padding-top:14px}
+.rec dl.record div{min-width:0}
+.rec dl.record div.full{grid-column:1/-1}
+.rec dl.record dt{font-size:12px;margin-bottom:1px}
+/* description, image and testimony */
+.what p{margin:0 0 12px}
+.rec-img{margin:22px 0;max-width:64ch}
+.rec-img img{display:block;max-width:100%;height:auto;border:1px solid var(--rule)}
+.rec-img figcaption{font-size:12.5px;line-height:1.5;color:var(--ink-soft);margin-top:6px}
+.rec-img .credit{display:block;font-size:11.5px}
+.rec-img details summary{cursor:pointer;background:var(--sunk);border:1px solid var(--rule);
+  padding:11px 14px;font-size:13px;color:var(--ink);list-style:none}
+.rec-img details summary::-webkit-details-marker{display:none}
+.rec-img .show{display:block;margin-top:4px;color:var(--ink-soft);text-decoration:underline}
+.rec-img details[open] summary{margin-bottom:10px}
+.testimony{margin:22px 0;padding:2px 0 2px 16px;border-left:3px solid var(--rule);max-width:60ch}
+.testimony p{font-family:var(--serif);font-style:italic;font-size:16px;margin:0 0 6px}
+.testimony footer{font-size:12.5px;color:var(--ink-soft)}
+.testimony .qsrc{display:block;font-size:11.5px}
 .regitem{border-left:3px dashed var(--rule);padding:2px 0 2px 14px;margin:0 0 26px}
 .regitem h3{margin:0 0 3px}
 .regitem .m{font-size:12.5px;color:var(--ink-soft);margin:0 0 8px;
@@ -255,4 +302,13 @@ dl.record dd{margin:0;overflow-wrap:anywhere}
   h1.title{font-size:25px}
   dl.record{grid-template-columns:1fr;gap:3px 0}
   dl.record dd{margin-bottom:10px}
+  /* record pages stack: title, then the map and related records, then the record itself */
+  .page.rec{grid-template-columns:1fr;grid-template-areas:"head" "side" "body"}
+  .rec-side{position:static;max-height:none;overflow:visible;margin-top:18px}
+  .minimap{height:240px}
+  .rec dl.record{grid-template-columns:1fr 1fr;gap:10px 20px}
+  .rec dl.record dd{margin-bottom:0}
+}
+@media (max-width:480px){
+  .rec dl.record{grid-template-columns:1fr}
 }

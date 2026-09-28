@@ -11,7 +11,7 @@ No dependencies beyond the standard library. Run it in CI on push; a failing
 validation should fail the build.
 """
 
-import csv, json, html, os, re, shutil, sys
+import csv, json, html, math, os, re, shutil, sys, urllib.parse
 from datetime import date
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -89,6 +89,12 @@ TIER = {'1': 'Court judgment, tribunal, truth commission, state archive, or peer
 LICENCES = {'own', 'public_domain', 'cc0', 'cc_by', 'cc_by_sa', 'permission'}
 
 e = html.escape
+
+
+def stop(t):
+    """End a sentence with a full stop unless it already has closing punctuation."""
+    t = t.rstrip()
+    return t if t.endswith(('.', '!', '?', '.)', '."')) else t + '.'
 
 
 # ---------------------------------------------------------------- load
@@ -377,14 +383,48 @@ def build_index(recs):
 # ---------------------------------------------------------------- record pages
 
 
+NEAR_KM = 250       # how far the record-page map and "Nearby" list look
+NEAR_MAX = 12
+
+
+def km(a, b):
+    """Great-circle distance between two located records."""
+    la1, lo1, la2, lo2 = map(math.radians, (a['lat'], a['lon'], b['lat'], b['lon']))
+    h = (math.sin((la2 - la1) / 2) ** 2 +
+         math.cos(la1) * math.cos(la2) * math.sin((lo2 - lo1) / 2) ** 2)
+    return 6371 * 2 * math.asin(min(1, math.sqrt(h)))
+
+
+def pin(x):
+    """The fields the record-page map needs for one pin."""
+    role = ('source' if x['layer'] == 'source_sites' else
+            'area' if x['geometry_type'] in ('region', 'route', 'network') else 'point')
+    return {'id': x['id'], 'name': x['event_name'], 'y': years(x), 'lat': x['lat'],
+            'lon': x['lon'], 'st': x['status'] or 'confirmed', 'role': role}
+
+
 def build_record(d, recs):
     st = d['status'] or 'confirmed'
     siblings = [x for x in recs if x['parent_campaign'] and
                 x['parent_campaign'] == d['parent_campaign'] and x['id'] != d['id']]
     children = [x for x in recs if x['parent_campaign'] == d['event_name']]
     sib_ids = {x['id'] for x in siblings} | {x['id'] for x in children}
-    nearby = [x for x in recs if d['country_today'] and x['country_today'] == d['country_today']
-              and x['id'] != d['id'] and x['id'] not in sib_ids][:6]
+    mapped = d['lat'] is not None
+    if mapped:
+        # Nearest located records by real distance, campaign or not, for the map.
+        near = sorted(((km(d, x), x) for x in recs
+                       if x['lat'] is not None and x['id'] != d['id']), key=lambda t: t[0])
+        near = [x for dist, x in near if dist <= NEAR_KM][:NEAR_MAX]
+        nearby = [x for x in near if x['id'] not in sib_ids]
+        near_label = f'Within {NEAR_KM} km'
+        by_dist = lambda x: km(d, x) if x['lat'] is not None else float('inf')
+        siblings.sort(key=by_dist)
+        children.sort(key=by_dist)
+    else:
+        near = []
+        nearby = [x for x in recs if d['country_today'] and x['country_today'] == d['country_today']
+                  and x['id'] != d['id'] and x['id'] not in sib_ids][:6]
+        near_label = 'Elsewhere in ' + e(d['country_today'])
 
     rows = [('Years', e(years(d))),
             ('Place', e(d['place_name'] or 'Not recorded')),
@@ -413,7 +453,10 @@ def build_record(d, recs):
         rows.append(('Part of', e(d['parent_campaign'])))
     rows.append(('Record id', e(d['id'])))
 
-    dl = '\n'.join(f'  <dt>{k}</dt><dd>{v}</dd>' for k, v in rows)
+    # Two columns of facts on a wide screen; long values take the full width.
+    full = {'Key source', 'Entity today', 'Documentation', 'Deaths'}
+    dl = '\n'.join('  <div%s><dt>%s</dt><dd>%s</dd></div>' %
+                   (' class="full"' if k in full else '', k, v) for k, v in rows)
 
     prose = ''
     if d.get('description'):
@@ -439,25 +482,37 @@ def build_record(d, recs):
                   f'<p>{e(d["quote"])}</p>'
                   f'<footer>{sp}{src}</footer></blockquote>')
     if d.get('notes'):
-        prose += f'<p>{e(d["notes"])}.</p>'
+        prose += f'<p>{e(stop(d["notes"]))}</p>'
     if d.get('toll_note'):
-        prose += f'<h2>On the figures</h2><p>{e(d["toll_note"])}.</p>'
+        prose += f'<h2>On the figures</h2><p>{e(stop(d["toll_note"]))}</p>'
     if d.get('register_reason'):
         prose += ('<h2>Why this is not on the map</h2>'
-                  f'<p>{e(d["register_reason"])}.</p>'
-                  f'<p>What would place it: {e(d["unlock"])}.</p>')
+                  f'<p>{e(stop(d["register_reason"]))}</p>'
+                  f'<p>What would place it: {e(stop(d["unlock"]))}</p>')
 
-    def lst(items, heading, note=''):
+    def lst(items, heading, note='', more=''):
+        """A short list for the side panel. Long campaigns link to the full set on the map."""
         if not items:
             return ''
-        li = '\n'.join(
-            f'<li><a href="{x["id"]}.html">{e(x["event_name"])}</a>'
-            f'<span class="m">{e(years(x))}, {e(x["place_name"] or x["country_today"])}</span></li>'
-            for x in items)
-        return (f'<h2>{heading}</h2>' + (f'<p>{note}</p>' if note else '') +
-                f'<ul class="siblings">{li}</ul>')
+        cap = 8
 
-    mapped = d['lat'] is not None
+        def meta(x):
+            m = e(years(x))
+            if x['place_name'] or x['country_today']:
+                m += ', ' + e(x['place_name'] or x['country_today'])
+            if mapped and x['lat'] is not None:
+                m += ' · %d km' % round(km(d, x))
+            return m
+
+        li = '\n'.join(f'<li><a href="{x["id"]}.html">{e(x["event_name"])}</a>'
+                       f'<span class="m">{meta(x)}</span></li>' for x in items[:cap])
+        if len(items) > cap and more:
+            li += (f'<li class="more"><a href="../index.html?q={urllib.parse.quote(more)}">'
+                   f'All {len(items)} on the map</a></li>')
+        return (f'<section class="rel"><h2 class="side-h">{heading}</h2>' +
+                (f'<p class="note">{note}</p>' if note else '') +
+                f'<ul class="siblings">{li}</ul></section>')
+
     actions = []
     if mapped:
         actions.append(f'<a href="../index.html#{d["id"]}">Show this on the map</a>')
@@ -471,7 +526,27 @@ def build_record(d, recs):
         where = where[:1]
     place = ''.join(', ' + e(x) for x in where)
 
-    body = f"""<main class="page" data-st="{e(st)}">
+    if mapped:
+        where_map = ('<div class="minimap" id="minimap" role="region" '
+                     f'aria-label="Map of {e(d["event_name"])} and records nearby">'
+                     '<p class="minimap-msg">The map didn\u2019t load. Tiles come from '
+                     'OpenFreeMap and need a connection.</p></div>'
+                     '<p class="minimap-cap">Location is approximate and not yet verified.'
+                     + (f' Other pins are records within {NEAR_KM} km; proximity doesn\u2019t '
+                        'mean they\u2019re connected.' if near else '') + '</p>')
+    else:
+        where_map = ('<p class="nomap"><b>No location.</b> This record can\u2019t be tied to a '
+                     'place with a source, so it has no pin. '
+                     '<a href="../register.html">About the register</a></p>')
+
+    side = (where_map +
+            lst(children, 'In this campaign', more=d['event_name']) +
+            lst(siblings, 'Same campaign', more=d['parent_campaign']) +
+            lst(nearby, near_label) +
+            f'<div class="actions">{"".join(actions)}</div>')
+
+    body = f"""<main class="page rec" data-st="{e(st)}">
+<div class="rec-head">
 <p class="crumb"><a href="../index.html">Index</a> / Record {e(d['id'])}</p>
 <h1 class="title">{e(d['event_name'])}</h1>
 <p class="subtitle"><span class="py">{e(years(d))}</span>{place}</p>
@@ -481,27 +556,37 @@ def build_record(d, recs):
 <p class="banner"><b>Seeded, not yet verified.</b> The source below is real and relevant, and
 nobody has yet opened it to confirm it says what this record claims. Treat it as a lead until
 that happens. <a href="../method.html#verification">How verification works</a></p>
+</div>
 
+<aside class="rec-side">
+{side}
+</aside>
+
+<div class="rec-body">
 {prose}
 
 <h2>The record</h2>
 <dl class="record">
 {dl}
 </dl>
-
-{lst(children, 'Records under this campaign')}
-{lst(siblings, 'Other records in the same campaign')}
-{lst(nearby, 'Nearby in ' + e(d['country_today']),
-     'Proximity only. These are not claimed to be connected.')}
-
-<div class="actions">{''.join(actions)}</div>
+</div>
 </main>
 {foot(1)}"""
+
+    head = js = ''
+    if mapped:
+        rec = {'self': pin(d), 'near': [pin(x) for x in near]}
+        head = ('<link href="../assets/vendor/maplibre-gl.css" rel="stylesheet">\n'
+                '<script src="../assets/vendor/maplibre-gl.js" defer></script>\n')
+        js = ('<script>window.REC=' + json.dumps(rec, separators=(',', ':'), ensure_ascii=False)
+              .replace('</', '<\\/') + ';</script>\n'
+              '<script src="../assets/basemap.js" defer></script>\n'
+              '<script src="../assets/record.js" defer></script>\n')
     return shell((f"{d['event_name']} \u2014 Still on Record", ''), body,
                  desc=f"{d['event_name']}, {years(d)}"
                       f"{''.join(', ' + x for x in where)}. "
                       f"Tier {d['evidence_tier']}, {STATUS.get(st, st).lower()}.",
-                 depth=1)
+                 depth=1, extra_head=head, extra_js=js)
 
 
 # ---------------------------------------------------------------- register
@@ -512,8 +597,8 @@ def build_register(recs):
     items = '\n'.join(f"""<div class="regitem">
   <h3><a href="record/{d['id']}.html">{e(d['event_name'])}</a></h3>
   <p class="m">{e(years(d))}, {e(d['place_name'] or d['country_today'])}</p>
-  <p><span class="lab">Why it cannot be placed:</span> {e(d.get('register_reason', ''))}.</p>
-  <p><span class="lab">What would place it:</span> {e(d.get('unlock', ''))}.</p>
+  <p><span class="lab">Why it cannot be placed:</span> {e(stop(d.get('register_reason', '')))}</p>
+  <p><span class="lab">What would place it:</span> {e(stop(d.get('unlock', '')))}</p>
 </div>""" for d in reg)
 
     body = f"""<main class="page">

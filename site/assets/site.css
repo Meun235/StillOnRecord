@@ -178,6 +178,9 @@ dl.f dd{margin:0;overflow-wrap:anywhere}
 .mk.sel .ring,.mk.sel::after{content:"";width:22px;height:22px;
   border:1.5px solid var(--ink);opacity:1}
 .mk:hover .dot,.mk:focus-visible .dot,.mk.hov .dot{width:12px;height:12px}
+/* fanned-out pins that share one exact spot: a hairline from each back to that spot */
+.mk .leg{position:absolute;left:50%;top:50%;height:1px;background:var(--ink-soft);opacity:.45;
+  transform-origin:0 0;z-index:-1;pointer-events:none}
 .mk .tip{position:absolute;left:16px;top:50%;transform:translateY(-50%);
   white-space:nowrap;font-size:12px;color:var(--ink);background:var(--card);
   border:1px solid var(--rule);padding:2px 7px;opacity:0;pointer-events:none;

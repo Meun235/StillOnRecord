@@ -110,6 +110,8 @@ function hideMapMsg() {
 
 document.getElementById('mapmsg-x').addEventListener('click', hideMapMsg);
 
+const SPREAD_ZOOM = 10;
+
 /* Deterministic representative points. Same input, same point, every time.
    Rank: parent campaign row, then evidence tier, then death figure, then earliest year. */
 function representatives() {
@@ -136,12 +138,19 @@ function representatives() {
       || (+a.evidence_tier || 9) - (+b.evidence_tier || 9)
       || (+(b.deaths_high || b.deaths_low) || 0) - (+(a.deaths_high || a.deaths_low) || 0)
       || (a.sy ?? 9999) - (b.sy ?? 9999) || (a.id < b.id ? -1 : 1));
+    // Records on exactly the same coordinates never separate by zooming, so once the view
+    // is close enough, fan them out around their shared point instead of grouping them.
+    const same = arr.every(d => d.lat === arr[0].lat && d.lon === arr[0].lon);
+    if (same && z >= SPREAD_ZOOM) {
+      ranked.forEach((d, i) => out.push({ rep: d, n: 1, fan: [i, ranked.length] }));
+      continue;
+    }
     out.push({ rep: ranked[0], n: arr.length });
   }
   return out;
 }
 
-function makeMarker(d, group) {
+function makeMarker(d, group, fan) {
   const el = document.createElement('button');
   el.className = 'mk';
   el.type = 'button';
@@ -149,13 +158,23 @@ function makeMarker(d, group) {
   el.dataset.st = d.status || 'confirmed';
   el.dataset.role = d.role;
   el.setAttribute('aria-label', d.event_name + ', ' + yrs(d) +
-    (group > 1 ? '. ' + (group - 1) + ' further records in this area' : ''));
-  el.innerHTML = (group > 1 ? '<span class="ring"></span>' : '') +
+    (group > 1 ? '. ' + (group - 1) + ' further records in this area' : '') +
+    (fan ? '. One of ' + fan[1] + ' records at this exact place' : ''));
+  let offset = [0, 0], leg = '';
+  if (fan) {
+    // Evenly round a circle, first record at the top, with a hairline back to the true spot.
+    const [i, n] = fan;
+    const r = Math.max(18, Math.ceil(n * 24 / (2 * Math.PI)));
+    const a = -Math.PI / 2 + i * 2 * Math.PI / n;
+    offset = [Math.round(r * Math.cos(a)), Math.round(r * Math.sin(a))];
+    leg = `<span class="leg" style="width:${r}px;transform:rotate(${a + Math.PI}rad)"></span>`;
+  }
+  el.innerHTML = leg + (group > 1 ? '<span class="ring"></span>' : '') +
     '<span class="dot"></span><span class="tip">' + esc(d.event_name) + '</span>';
   el.addEventListener('click', ev => { ev.stopPropagation(); select(d.id, true); });
   el.addEventListener('pointerenter', () => hoverRow(d.id, true));
   el.addEventListener('pointerleave', () => hoverRow(d.id, false));
-  return new maplibregl.Marker({ element: el }).setLngLat([d.lon, d.lat]);
+  return new maplibregl.Marker({ element: el, offset }).setLngLat([d.lon, d.lat]);
 }
 
 function syncMarkers() {
@@ -163,10 +182,10 @@ function syncMarkers() {
   const reps = representatives();
   const keep = new Set();
   reps.forEach(g => {
-    const key = g.rep.id + '|' + (g.n > 1 ? 'g' : 's');
+    const key = g.rep.id + '|' + (g.fan ? 'f' + g.fan.join('/') : g.n > 1 ? 'g' : 's');
     keep.add(key);
     if (!markers.has(key)) {
-      const m = makeMarker(g.rep, g.n);
+      const m = makeMarker(g.rep, g.n, g.fan);
       m.addTo(map);
       markers.set(key, m);
     }

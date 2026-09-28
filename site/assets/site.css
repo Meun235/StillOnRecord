@@ -175,9 +175,17 @@ dl.f dd{margin:0;overflow-wrap:anywhere}
 .mk[data-role="area"][data-st="contested"]::before{border-color:var(--contested)}
 .mk[data-role="area"][data-st="ongoing_adjudication"]::before{border-color:var(--ongoing)}
 .mk .ring{width:20px;height:20px;border:1px solid var(--ink-soft);opacity:.5}
-.mk.sel .ring,.mk.sel::after{content:"";width:22px;height:22px;
-  border:1.5px solid var(--ink);opacity:1}
 .mk:hover .dot,.mk:focus-visible .dot,.mk.hov .dot{width:12px;height:12px}
+/* selected: a bigger dot with a tight dark outline and no gap, so it never reads as the
+   thin, gapped "more records here" ring */
+.mk.sel{z-index:2}
+.mk.sel .dot{width:14px;height:14px;
+  box-shadow:0 0 0 2px var(--card),0 0 0 3.5px var(--ink)}
+.mk.sel[data-role="source"] .dot{width:12px;height:12px}
+.mk.sel .ring{width:30px;height:30px}
+/* fanned-out pins that share one exact spot: a hairline from each back to that spot */
+.mk .leg{position:absolute;left:50%;top:50%;height:1px;background:var(--ink-soft);opacity:.45;
+  transform-origin:0 0;z-index:-1;pointer-events:none}
 .mk .tip{position:absolute;left:16px;top:50%;transform:translateY(-50%);
   white-space:nowrap;font-size:12px;color:var(--ink);background:var(--card);
   border:1px solid var(--rule);padding:2px 7px;opacity:0;pointer-events:none;

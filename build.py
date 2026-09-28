@@ -238,8 +238,6 @@ commercial, with attribution and share-alike. Run by a Netherlands stichting; bo
 plan and annual figures are published. No advertising, no paywall, no sponsored content.
 <br><a href="{up}method.html">Method</a> \u00b7 <a href="{up}rules.html">Inclusion rules</a>
 \u00b7 <a href="{up}images.html">Image policy</a> \u00b7 <a href="{up}register.html">Register</a>
-<br>Seed stage: records name their sources, and those sources have not yet been opened and
-checked one by one. Coordinates are approximate and unverified. Not for citation.
 </div></footer>"""
 
 

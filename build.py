@@ -342,16 +342,16 @@ def build_index(recs):
     <div class="key">
       <p class="kh">Status</p>
       <ul>
-        <li><i class="ki dot" style="--c:var(--confirmed)"></i>Confirmed</li>
-        <li><i class="ki dot" style="--c:var(--contested)"></i>Historians disagree</li>
-        <li><i class="ki dot" style="--c:var(--ongoing)"></i>Before the courts</li>
+        <li><span class="mk" data-st="confirmed" data-role="point" aria-hidden="true"><span class="dot"></span></span>Confirmed</li>
+        <li><span class="mk" data-st="contested" data-role="point" aria-hidden="true"><span class="dot"></span></span>Historians disagree</li>
+        <li><span class="mk" data-st="ongoing_adjudication" data-role="point" aria-hidden="true"><span class="dot"></span></span>Before the courts</li>
       </ul>
       <p class="kh">Shape</p>
-      <ul>
-        <li><i class="ki dot"></i>Site of harm</li>
-        <li><i class="ki sq"></i>Where decisions were taken</li>
-        <li><i class="ki area"></i>Covers an area, not a point</li>
-        <li><i class="ki more"></i>More records here, zoom in</li>
+      <ul class="shape">
+        <li><span class="mk" data-st="confirmed" data-role="point" aria-hidden="true"><span class="dot"></span></span>Site of harm</li>
+        <li><span class="mk" data-st="confirmed" data-role="source" aria-hidden="true"><span class="dot"></span></span>Where decisions were taken</li>
+        <li><span class="mk" data-st="confirmed" data-role="area" aria-hidden="true"><span class="dot"></span></span>Covers an area, not a point</li>
+        <li><span class="mk" data-st="confirmed" data-role="point" aria-hidden="true"><span class="ring"></span><span class="dot"></span></span>More records here, zoom in</li>
       </ul>
       <p class="kn">Records with no location are in the list only.</p>
     </div>

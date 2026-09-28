@@ -413,8 +413,13 @@ def pin(x):
     """The fields the record-page map needs for one pin."""
     role = ('source' if x['layer'] == 'source_sites' else
             'area' if x['geometry_type'] in ('region', 'route', 'network') else 'point')
-    return {'id': x['id'], 'name': x['event_name'], 'y': years(x), 'lat': x['lat'],
-            'lon': x['lon'], 'st': x['status'] or 'confirmed', 'role': role}
+    o = {'id': x['id'], 'name': x['event_name'], 'y': years(x), 'lat': x['lat'],
+         'lon': x['lon'], 'st': x['status'] or 'confirmed', 'role': role,
+         # for picking which pin stands in for a group, the same rule as the main map
+         't': x['evidence_tier'], 'dh': x['deaths_high'] or x['deaths_low'], 'pc': x['parent_campaign']}
+    if x['sy'] is not None:
+        o['sy'] = x['sy']
+    return o
 
 
 def build_record(d, recs):

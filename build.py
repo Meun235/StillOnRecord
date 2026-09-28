@@ -36,6 +36,25 @@ YEAR_CEIL = date.today().year
 
 DOMAIN = 'stillonrecord.org'   # written to dist/CNAME on every build
 
+# Crawlers that collect pages for AI training or AI answers. Each one is told to stay out in
+# dist/robots.txt. Search engines are not listed, so the site still shows up in search.
+# robots.txt is a request: the named companies say they honour it, others may not.
+AI_CRAWLERS = [
+    'GPTBot', 'ChatGPT-User', 'OAI-SearchBot',                    # OpenAI
+    'ClaudeBot', 'Claude-User', 'Claude-SearchBot', 'anthropic-ai',  # Anthropic
+    'Google-Extended', 'Applebot-Extended',                        # Google, Apple AI opt-outs
+    'CCBot',                                                       # Common Crawl
+    'PerplexityBot', 'Perplexity-User',
+    'meta-externalagent', 'meta-externalfetcher', 'FacebookBot',   # Meta
+    'Bytespider',                                                  # ByteDance
+    'Amazonbot',
+    'cohere-ai', 'cohere-training-data-crawler',
+    'MistralAI-User',
+    'AI2Bot', 'Ai2Bot-Dolma',
+    'Diffbot', 'ImagesiftBot', 'Omgilibot', 'omgili', 'Timpibot', 'YouBot',
+    'DuckAssistBot', 'PanguBot', 'Kangaroo Bot', 'webzio-extended',
+]
+
 # Analytics. Empty string means none, and no script is emitted at all.
 # Set to your GoatCounter endpoint, e.g. 'https://stillonrecord.goatcounter.com/count'
 # Self-hosting later is a change to this line and nothing else.
@@ -215,6 +234,7 @@ def shell(title, body, desc=TAGLINE, depth=0, body_class='', extra_head='', extr
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>{e(title[0])}</title>
 <meta name="description" content="{e(desc)}">
+<meta name="robots" content="noai, noimageai">
 <link rel="stylesheet" href="{up}assets/fonts.css">
 <link rel="stylesheet" href="{up}assets/site.css">
 {extra_head}</head>
@@ -934,6 +954,12 @@ def main():
 
     with open(os.path.join(OUT, 'CNAME'), 'w', encoding='utf-8') as f:
         f.write(DOMAIN + '\n')
+
+    with open(os.path.join(OUT, 'robots.txt'), 'w', encoding='utf-8') as f:
+        f.write('# AI crawlers are asked not to collect this site.\n'
+                '# Search engines and people are welcome.\n\n')
+        f.write(''.join(f'User-agent: {b}\n' for b in AI_CRAWLERS))
+        f.write('Disallow: /\n\nUser-agent: *\nAllow: /\n')
 
     write_artifacts(recs)
 

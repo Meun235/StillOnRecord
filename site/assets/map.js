@@ -4,7 +4,9 @@
    record from data/entries/<id>.json when the panel opens. */
 
 const DATA = window.RECORDS || [];
-const S = { lo: 1500, hi: 2026, q: '', cat: null, core: true, src: false, sel: null };
+// The year range comes from the slider, which build.py sets to YEAR_FLOOR..current year.
+const Y0 = +document.getElementById('r1').min, Y1 = +document.getElementById('r1').max;
+const S = { lo: Y0, hi: Y1, q: '', cat: null, core: true, src: false, sel: null };
 
 const BASIS = {
   counted: 'Counted: bodies named, exhumed, or entered in the perpetrator\u2019s own register.',
@@ -297,8 +299,8 @@ function syncT() {
   S.hi = Math.max(+r1.value, +r2.value);
   document.getElementById('years').textContent = S.lo + '\u2013' + S.hi;
   const f = document.getElementById('fill');
-  f.style.left = ((S.lo - 1500) / 526 * 100) + '%';
-  f.style.width = ((S.hi - S.lo) / 526 * 100) + '%';
+  f.style.left = ((S.lo - Y0) / (Y1 - Y0) * 100) + '%';
+  f.style.width = ((S.hi - S.lo) / (Y1 - Y0) * 100) + '%';
   draw();
 }
 r1.addEventListener('input', syncT);
@@ -309,10 +311,10 @@ document.getElementById('play').onclick = function () {
   if (anim) { cancelAnimationFrame(anim); anim = null; this.textContent = 'Run'; return; }
   this.textContent = 'Stop';
   const t0 = performance.now(), btn = this;
-  r1.value = 1500;
+  r1.value = Y0;
   const step = t => {
     const p = Math.min(1, (t - t0) / 20000);
-    r2.value = Math.round(1500 + p * 526);
+    r2.value = Math.round(Y0 + p * (Y1 - Y0));
     syncT();
     if (p < 1) anim = requestAnimationFrame(step);
     else { anim = null; btn.textContent = 'Run'; }
@@ -323,7 +325,7 @@ document.getElementById('play').onclick = function () {
 /* ---------- shareable state ---------- */
 function writeUrl() {
   const p = new URLSearchParams();
-  if (S.lo !== 1500 || S.hi !== 2026) p.set('years', S.lo + '-' + S.hi);
+  if (S.lo !== Y0 || S.hi !== Y1) p.set('years', S.lo + '-' + S.hi);
   if (S.q) p.set('q', S.q);
   if (S.cat) p.set('cat', S.cat);
   if (!S.core) p.set('events', '0');

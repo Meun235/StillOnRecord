@@ -40,7 +40,7 @@ DOMAIN = 'stillonrecord.org'   # written to dist/CNAME on every build
 # Set to your GoatCounter endpoint, e.g. 'https://stillonrecord.goatcounter.com/count'
 # Self-hosting later is a change to this line and nothing else.
 ANALYTICS = 'https://stillonrecord.goatcounter.com/count'
-TAGLINE = 'A sourced map of deliberately caused mass suffering, 1500 to now.'
+TAGLINE = 'A sourced map of deliberately caused mass suffering.'
 
 BASIS = {
     'counted': 'Counted: bodies named, exhumed, or entered in the perpetrator\u2019s own register.',
@@ -92,9 +92,14 @@ def load():
             d['ey'] = int(d['end_year'] or d['start_year'])
         except ValueError:
             d['ey'] = d['sy']
+        d['bad_coords'] = None
         if d['lat'] and d['lon']:
-            d['lat'] = round(float(d['lat']), 5)
-            d['lon'] = round(float(d['lon']), 5)
+            try:
+                d['lat'] = round(float(d['lat']), 5)
+                d['lon'] = round(float(d['lon']), 5)
+            except ValueError:
+                d['bad_coords'] = f"{d['lat']}, {d['lon']}"
+                d['lat'] = d['lon'] = None
         else:
             d['lat'] = d['lon'] = None
         if d['id'] in reg:
@@ -142,6 +147,15 @@ def validate(recs):
             errors.append(f'{i}: quote present with no quote_speaker')
         if d.get('quote') and len(d['quote'].split()) > 45:
             errors.append(f'{i}: quote is {len(d["quote"].split())} words, keep it short')
+        if d['bad_coords']:
+            errors.append(f'{i}: coordinates "{d["bad_coords"]}" are not numbers')
+        for f2 in ('deaths_low', 'deaths_high', 'affected_low', 'affected_high'):
+            if d.get(f2) and not d[f2].isdigit():
+                errors.append(f'{i}: {f2} "{d[f2]}" is not a whole number')
+        if d['start_year'] and d['sy'] is None:
+            errors.append(f'{i}: start_year "{d["start_year"]}" is not a year')
+        if d['end_year'] and not d['end_year'].lstrip('-').isdigit():
+            errors.append(f'{i}: end_year "{d["end_year"]}" is not a year')
         if d['sy'] is None:
             continue          # undated records are allowed, see years() and build_index
         if d['ey'] is None:
@@ -216,15 +230,18 @@ def shell(title, body, desc=TAGLINE, depth=0, body_class='', extra_head='', extr
 """
 
 
-FOOT = """<footer class="foot"><div class="in">
+def foot(depth=0):
+    up = '../' * depth
+    return f"""<footer class="foot"><div class="in">
 Data under the Open Database License, text under CC BY-SA 4.0. Free for any use including
 commercial, with attribution and share-alike. Run by a Netherlands stichting; board, policy
 plan and annual figures are published. No advertising, no paywall, no sponsored content.
-<br><a href="method.html">Method</a> \u00b7 <a href="rules.html">Inclusion rules</a>
-\u00b7 <a href="images.html">Image policy</a> \u00b7 <a href="register.html">Register</a>
-<br>Seed stage: records name their sources, and those sources have not yet been opened and
-checked one by one. Coordinates are approximate and unverified. Not for citation.
+<br><a href="{up}method.html">Method</a> \u00b7 <a href="{up}rules.html">Inclusion rules</a>
+\u00b7 <a href="{up}images.html">Image policy</a> \u00b7 <a href="{up}register.html">Register</a>
 </div></footer>"""
+
+
+FOOT = foot()
 
 
 # ---------------------------------------------------------------- map page
@@ -338,7 +355,7 @@ def build_record(d, recs):
                 x['parent_campaign'] == d['parent_campaign'] and x['id'] != d['id']]
     children = [x for x in recs if x['parent_campaign'] == d['event_name']]
     sib_ids = {x['id'] for x in siblings} | {x['id'] for x in children}
-    nearby = [x for x in recs if x['country_today'] == d['country_today']
+    nearby = [x for x in recs if d['country_today'] and x['country_today'] == d['country_today']
               and x['id'] != d['id'] and x['id'] not in sib_ids][:6]
 
     rows = [('Years', e(years(d))),
@@ -421,13 +438,15 @@ def build_record(d, recs):
                    'Suggest a correction</a>')
     actions.append('<a href="../index.html">Back to the index</a>')
 
-    tail = (', ' + e(d['country_today'])
-            if d['country_today'] and d['country_today'] != d['place_name'] else '')
+    where = [x for x in (d['place_name'], d['country_today']) if x]
+    if len(where) == 2 and where[0] == where[1]:
+        where = where[:1]
+    place = ''.join(', ' + e(x) for x in where)
 
     body = f"""<main class="page" data-st="{e(st)}">
 <p class="crumb"><a href="../index.html">Index</a> / Record {e(d['id'])}</p>
 <h1 class="title">{e(d['event_name'])}</h1>
-<p class="subtitle"><span class="py">{e(years(d))}</span>, {e(d['place_name'] or '')}{tail}</p>
+<p class="subtitle"><span class="py">{e(years(d))}</span>{place}</p>
 <p class="statusline">{e(d['category'])}. Tier {e(d['evidence_tier'])},
 {e(STATUS.get(st, st).lower())}.</p>
 
@@ -444,14 +463,15 @@ that happens. <a href="../method.html#verification">How verification works</a></
 
 {lst(children, 'Records under this campaign')}
 {lst(siblings, 'Other records in the same campaign')}
-{lst(nearby, 'Nearby in ' + e(d['country_today'] or 'the same country'),
+{lst(nearby, 'Nearby in ' + e(d['country_today']),
      'Proximity only. These are not claimed to be connected.')}
 
 <div class="actions">{''.join(actions)}</div>
 </main>
-{FOOT}"""
+{foot(1)}"""
     return shell((f"{d['event_name']} \u2014 Still on Record", ''), body,
-                 desc=f"{d['event_name']}, {years(d)}, {d['place_name']}. "
+                 desc=f"{d['event_name']}, {years(d)}"
+                      f"{''.join(', ' + x for x in where)}. "
                       f"Tier {d['evidence_tier']}, {STATUS.get(st, st).lower()}.",
                  depth=1)
 

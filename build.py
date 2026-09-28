@@ -40,7 +40,7 @@ DOMAIN = 'stillonrecord.org'   # written to dist/CNAME on every build
 # Set to your GoatCounter endpoint, e.g. 'https://stillonrecord.goatcounter.com/count'
 # Self-hosting later is a change to this line and nothing else.
 ANALYTICS = 'https://stillonrecord.goatcounter.com/count'
-TAGLINE = 'A sourced map of deliberately caused mass suffering, 1500 to now.'
+TAGLINE = 'A sourced map of deliberately caused mass suffering.'
 
 BASIS = {
     'counted': 'Counted: bodies named, exhumed, or entered in the perpetrator\u2019s own register.',

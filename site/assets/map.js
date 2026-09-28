@@ -73,12 +73,7 @@ function initMap() {
   });
   map.touchZoomRotate.disableRotation();
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
-  map.addControl(new maplibregl.AttributionControl({
-    compact: true,
-    customAttribution: '<a href="https://openfreemap.org">OpenFreeMap</a> \u00b7 ' +
-      '<a href="https://www.openmaptiles.org/">OpenMapTiles</a> \u00b7 ' +
-      '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-  }), 'bottom-right');
+  map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
 
   map.on('load', () => {
     ready = true;

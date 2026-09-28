@@ -1,6 +1,6 @@
 /* Still on Record — the small map on a record page
-   REC is injected by the page: this record, plus located records close by, each with
-   id, name, lat, lon, status and role. Pins use the same markup and styles as the main map;
+   REC is injected by the page: this record, plus the located records of its campaign,
+   each with id, name, lat, lon, status and role. With no campaign, only this record. Pins use the same markup and styles as the main map;
    this record is drawn selected, and every other pin links to its own record page. */
 
 (function () {
@@ -26,12 +26,7 @@
   });
   map.touchZoomRotate.disableRotation();
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
-  map.addControl(new maplibregl.AttributionControl({
-    compact: true,
-    customAttribution: '<a href="https://openfreemap.org">OpenFreeMap</a> · ' +
-      '<a href="https://www.openmaptiles.org/">OpenMapTiles</a> · ' +
-      '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-  }), 'bottom-right');
+  map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
 
   const pins = [REC.self].concat(REC.near);
 
@@ -74,14 +69,16 @@
   // the map's canvas matched to it, and re-frame once it has its real size.
   if ('ResizeObserver' in window) new ResizeObserver(() => map.resize()).observe(box);
 
-  map.on('load', () => {
-    map.resize();
-    if (REC.near.length) {
-      const b = new maplibregl.LngLatBounds();
-      pins.forEach(p => b.extend([p.lon, p.lat]));
-      map.fitBounds(b, { padding: 44, maxZoom: 11, animate: false });
-    }
-  });
+  // Frame the whole campaign right away, not only once the basemap has loaded, so the
+  // pins are in view even on a slow connection or if the tiles never arrive.
+  const frame = () => {
+    if (!REC.near.length) return;
+    const b = new maplibregl.LngLatBounds();
+    pins.forEach(p => b.extend([p.lon, p.lat]));
+    map.fitBounds(b, { padding: 44, maxZoom: 11, animate: false });
+  };
+  frame();
+  map.on('load', () => { map.resize(); frame(); });
 
   window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change', ev => {
     map.setStyle(buildStyle(ev.matches));

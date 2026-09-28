@@ -91,6 +91,20 @@ LICENCES = {'own', 'public_domain', 'cc0', 'cc_by', 'cc_by_sa', 'permission'}
 e = html.escape
 
 
+_VER = {}
+
+
+def v(name):
+    """An asset path with a short content hash, e.g. site.css?v=3f9a1c2e.
+    A changed file gets a new address, so no browser can pair a new page with an old
+    cached stylesheet or script."""
+    if name not in _VER:
+        import hashlib
+        with open(os.path.join(ASSETS, name), 'rb') as f:
+            _VER[name] = hashlib.sha1(f.read()).hexdigest()[:8]
+    return f'assets/{name}?v={_VER[name]}'
+
+
 def stop(t):
     """End a sentence with a full stop unless it already has closing punctuation."""
     t = t.rstrip()
@@ -241,8 +255,8 @@ def shell(title, body, desc=TAGLINE, depth=0, body_class='', extra_head='', extr
 <title>{e(title[0])}</title>
 <meta name="description" content="{e(desc)}">
 <meta name="robots" content="noai, noimageai">
-<link rel="stylesheet" href="{up}assets/fonts.css">
-<link rel="stylesheet" href="{up}assets/site.css">
+<link rel="stylesheet" href="{up}{v('fonts.css')}">
+<link rel="stylesheet" href="{up}{v('site.css')}">
 {extra_head}</head>
 <body{f' class="{body_class}"' if body_class else ''}>
 <header class="mast">
@@ -370,12 +384,12 @@ def build_index(recs):
   </div>
 </div>
 """
-    head = ('<link href="assets/vendor/maplibre-gl.css" rel="stylesheet">\n'
-            '<script src="assets/vendor/maplibre-gl.js"></script>\n')
+    head = (f'<link href="{v("vendor/maplibre-gl.css")}" rel="stylesheet">\n'
+            f'<script src="{v("vendor/maplibre-gl.js")}"></script>\n')
     js = ('<script>window.RECORDS=' + json.dumps(slim, separators=(',', ':'),
                                                  ensure_ascii=False) + ';</script>\n'
-          '<script src="assets/basemap.js"></script>\n'
-          '<script src="assets/map.js"></script>\n')
+          f'<script src="{v("basemap.js")}"></script>\n'
+          f'<script src="{v("map.js")}"></script>\n')
     return shell(('Still on Record', 'index.html'), body, body_class='map',
                  extra_head=head, extra_js=js)
 
@@ -383,7 +397,7 @@ def build_index(recs):
 # ---------------------------------------------------------------- record pages
 
 
-NEAR_KM = 250       # how far the record-page map and "Nearby" list look
+NEAR_KM = 250       # how far the "Within 250 km" list looks
 NEAR_MAX = 12
 
 
@@ -420,8 +434,14 @@ def build_record(d, recs):
         by_dist = lambda x: km(d, x) if x['lat'] is not None else float('inf')
         siblings.sort(key=by_dist)
         children.sort(key=by_dist)
+        # The map shows this record and the rest of its campaign, nothing else.
+        seen, campaign_pins = set(), []
+        for x in children + siblings:
+            if x['lat'] is not None and x['id'] not in seen:
+                seen.add(x['id'])
+                campaign_pins.append(x)
     else:
-        near = []
+        near, campaign_pins = [], []
         nearby = [x for x in recs if d['country_today'] and x['country_today'] == d['country_today']
                   and x['id'] != d['id'] and x['id'] not in sib_ids][:6]
         near_label = 'Elsewhere in ' + e(d['country_today'])
@@ -532,8 +552,8 @@ def build_record(d, recs):
                      '<p class="minimap-msg">The map didn\u2019t load. Tiles come from '
                      'OpenFreeMap and need a connection.</p></div>'
                      '<p class="minimap-cap">Location is approximate and not yet verified.'
-                     + (f' Other pins are records within {NEAR_KM} km; proximity doesn\u2019t '
-                        'mean they\u2019re connected.' if near else '') + '</p>')
+                     + (' The other pins are records in the same campaign.'
+                        if campaign_pins else '') + '</p>')
     else:
         where_map = ('<p class="nomap"><b>No location.</b> This record can\u2019t be tied to a '
                      'place with a source, so it has no pin. '
@@ -575,13 +595,13 @@ that happens. <a href="../method.html#verification">How verification works</a></
 
     head = js = ''
     if mapped:
-        rec = {'self': pin(d), 'near': [pin(x) for x in near]}
-        head = ('<link href="../assets/vendor/maplibre-gl.css" rel="stylesheet">\n'
-                '<script src="../assets/vendor/maplibre-gl.js" defer></script>\n')
+        rec = {'self': pin(d), 'near': [pin(x) for x in campaign_pins]}
+        head = (f'<link href="../{v("vendor/maplibre-gl.css")}" rel="stylesheet">\n'
+                f'<script src="../{v("vendor/maplibre-gl.js")}" defer></script>\n')
         js = ('<script>window.REC=' + json.dumps(rec, separators=(',', ':'), ensure_ascii=False)
               .replace('</', '<\\/') + ';</script>\n'
-              '<script src="../assets/basemap.js" defer></script>\n'
-              '<script src="../assets/record.js" defer></script>\n')
+              f'<script src="../{v("basemap.js")}" defer></script>\n'
+              f'<script src="../{v("record.js")}" defer></script>\n')
     return shell((f"{d['event_name']} \u2014 Still on Record", ''), body,
                  desc=f"{d['event_name']}, {years(d)}"
                       f"{''.join(', ' + x for x in where)}. "

@@ -17,7 +17,7 @@
     style: buildStyle(dark),
     center: [REC.self.lon, REC.self.lat],
     zoom: 9,
-    maxZoom: 16,
+    maxZoom: 17,
     attributionControl: false,
     dragRotate: false,
     pitchWithRotate: false,
@@ -34,9 +34,9 @@
 
   /* Grouping works exactly as on the main map (see representatives() in map.js): pins that
      land close together on screen are grouped under one pin with a ring and split apart
-     as you zoom in, and records on one exact spot fan out only from SPREAD_ZOOM. This
-     record always stands in for its own group, so it never disappears. */
-  const SPREAD_ZOOM = 10, CELL = 34;
+     as you zoom in. This record always stands in for its own group, so it never
+     disappears. */
+  const CELL = 34;
   pins.forEach(p => {
     const mc = maplibregl.MercatorCoordinate.fromLngLat([p.lon, p.lat]);
     p.mx = mc.x; p.my = mc.y;
@@ -60,17 +60,12 @@
         || (+a.t || 9) - (+b.t || 9)
         || (+b.dh || 0) - (+a.dh || 0)
         || (a.sy ?? 9999) - (b.sy ?? 9999) || (a.id < b.id ? -1 : 1));
-      const same = arr.every(p => p.lat === arr[0].lat && p.lon === arr[0].lon);
-      if (same && z >= SPREAD_ZOOM) {
-        ranked.forEach((p, i) => out.push({ rep: p, n: 1, fan: [i, ranked.length] }));
-        continue;
-      }
       out.push({ rep: ranked[0], n: arr.length });
     }
     return out;
   }
 
-  function marker(p, n, fan) {
+  function marker(p, n) {
     const self = p === REC.self;
     const el = document.createElement(self ? 'span' : 'a');
     el.className = 'mk' + (self ? ' sel' : '');
@@ -81,26 +76,18 @@
       el.setAttribute('aria-label', p.name + ', ' + p.y +
         (n > 1 ? '. ' + (n - 1) + ' further records in this area, zoom in to separate them' : ''));
     }
-    let offset = [0, 0], leg = '';
-    if (fan) {
-      const [i, k] = fan;
-      const r = Math.max(18, Math.ceil(k * 24 / (2 * Math.PI)));
-      const a = -Math.PI / 2 + i * 2 * Math.PI / k;
-      offset = [Math.round(r * Math.cos(a)), Math.round(r * Math.sin(a))];
-      leg = `<span class="leg" style="width:${r}px;transform:rotate(${a + Math.PI}rad)"></span>`;
-    }
-    el.innerHTML = leg + (n > 1 ? '<span class="ring"></span>' : '') + '<span class="dot"></span>' +
+    el.innerHTML = (n > 1 ? '<span class="ring"></span>' : '') + '<span class="dot"></span>' +
       (self ? '' : '<span class="tip">' + esc(p.name) + '</span>');
-    return new maplibregl.Marker({ element: el, offset }).setLngLat([p.lon, p.lat]);
+    return new maplibregl.Marker({ element: el }).setLngLat([p.lon, p.lat]);
   }
 
   const shown = new Map();
   function sync() {
     const keep = new Set();
     groups().forEach(g => {
-      const key = g.rep.id + '|' + (g.fan ? 'f' + g.fan.join('/') : g.n > 1 ? 'g' + g.n : 's');
+      const key = g.rep.id + '|' + (g.n > 1 ? 'g' + g.n : 's');
       keep.add(key);
-      if (!shown.has(key)) shown.set(key, marker(g.rep, g.n, g.fan).addTo(map));
+      if (!shown.has(key)) shown.set(key, marker(g.rep, g.n).addTo(map));
     });
     for (const [key, m] of shown) if (!keep.has(key)) { m.remove(); shown.delete(key); }
   }

@@ -83,7 +83,8 @@ Shape carries the site role, fill carries the status, and nothing carries the to
 | hollow square | a room where decisions were taken. Never clusters with victim sites. |
 | dashed ring | the record covers an area, not a located point |
 | thin outer ring | more records underneath, zoom to separate them |
-| pins fanned out on hairlines | several records share one exact coordinate. From zoom 10 they spread in a circle around it (`SPREAD_ZOOM` in `map.js`), since zooming can never separate them |
+
+Records that share one exact coordinate in the CSV are placed 50 m apart on a small circle around it by the build (`spread_shared_spots` in `build.py`), so zooming in always separates them. Their record page shows the published coordinates and says they were moved and from where. `dataset.csv` keeps the source coordinates.
 | no pin at all | unlocated. It stays in the index and in the register. |
 
 Where several records fall in one place at low zoom, one stands in for the group and the rest are hidden. The stand-in is picked by a fixed rule, so the same view always shows the same record: parent campaign row first, then evidence tier, then death figure, then earliest start year. There are no cluster bubbles with counts, deliberately. A bubble reading 44,000 next to one reading 12 makes a quantitative claim the data can't support.

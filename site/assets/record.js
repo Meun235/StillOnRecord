@@ -26,12 +26,7 @@
   });
   map.touchZoomRotate.disableRotation();
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
-  map.addControl(new maplibregl.AttributionControl({
-    compact: true,
-    customAttribution: '<a href="https://openfreemap.org">OpenFreeMap</a> · ' +
-      '<a href="https://www.openmaptiles.org/">OpenMapTiles</a> · ' +
-      '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-  }), 'bottom-right');
+  map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
 
   const pins = [REC.self].concat(REC.near);
 

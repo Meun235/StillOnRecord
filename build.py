@@ -350,13 +350,6 @@ def build_index(recs):
   <a href="method.html#verification">How verification works</a>
 </div>
 
-<div class="caveat">
-  <span><b>Record density reflects which archives opened and which courts sat, not which
-  atrocities were worst.</b> The Holocaust has 44,000 documented sites because the USHMM
-  catalogued them. Most Chinese provincial archives have never been opened.</span>
-  <a href="method.html#density">Why this matters</a>
-</div>
-
 <div class="wrap">
   <div class="idx">
     <div class="idxtop">
@@ -404,6 +397,10 @@ def build_index(recs):
       </ul>
       <p class="kn">Records with no location are in the list only.</p>
     </div>
+    <p class="density"><b>Record density reflects which archives opened and which courts sat,
+      not which atrocities were worst.</b> The Holocaust has 44,000 documented sites because the
+      USHMM catalogued them. Most Chinese provincial archives have never been opened.
+      <a href="method.html#density">Why this matters</a></p>
     <div class="mapmsg" id="mapmsg" hidden>
       <button class="mapmsg-x" id="mapmsg-x" aria-label="Dismiss">\u00d7</button>
       <b>The basemap didn\u2019t load.</b>

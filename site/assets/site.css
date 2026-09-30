@@ -134,6 +134,12 @@ dl.f dd{margin:0;overflow-wrap:anywhere}
 /* legend symbols are real pins (see build_index), so they always match the map */
 .key .mk{flex:none;cursor:default;pointer-events:none}
 .key .shape{--confirmed:var(--ink-soft)}
+/* the density caveat, along the bottom of the map, clear of the legend on the right */
+.density{position:absolute;left:14px;right:250px;bottom:14px;z-index:5;margin:0;max-width:760px;
+  background:var(--card);border:1px solid var(--rule);padding:7px 11px;
+  font-size:12px;line-height:1.5;color:var(--ink-soft)}
+.density b{color:var(--ink);font-weight:450}
+.density a{color:var(--ink-soft);white-space:nowrap}
 .mapmsg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:6;
   background:var(--card);border:1px solid var(--rule);padding:14px 18px;max-width:340px;
   font-size:13px;line-height:1.6;color:var(--ink-soft)}
@@ -288,13 +294,18 @@ dl.record dd{margin:0;overflow-wrap:anywhere}
 @media (max-width:860px){
   body.map{overflow:auto}
   .wrap{grid-template-columns:1fr;height:auto}
-  .mapwrap{height:52vh;order:-1;border-bottom:1px solid var(--rule)}
+  .mapwrap{order:-1;border-bottom:1px solid var(--rule)}
   .idx{border-right:0;height:auto}
   .list{overflow:visible}
   .mast{flex-wrap:wrap;gap:8px}
   .mast .line{flex:1 1 100%;order:3}
   .caveat{flex-direction:column;gap:4px}
   .key{display:none}
+  /* on a phone the map is small, so the density note sits under it rather than on it */
+  .mapwrap{height:auto}
+  #map{position:relative;height:52vh}
+  .density{position:static;max-width:none;border:0;border-top:1px solid var(--rule);
+    padding:9px 16px;font-size:12px}
   .page{padding:24px 16px 60px}
   h1.title{font-size:25px}
   dl.record{grid-template-columns:1fr;gap:3px 0}

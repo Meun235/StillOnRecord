@@ -150,14 +150,17 @@ def load():
     return recs
 
 
-SPREAD_M = 50        # metres between neighbours when records share one exact coordinate
+SPREAD_M = 50        # records that share one exact coordinate are scattered within this radius
+SPREAD_GAP = 20      # and kept at least this far apart, so none overlap at full zoom
 
 
 def spread_shared_spots(recs):
     """Records on exactly the same coordinates would sit on top of each other on every map,
-    at every zoom. Place them evenly on a small circle around the shared point instead,
-    SPREAD_M apart, in id order, first one due north. The source coordinate is kept in
-    coord_shared so the record can say it was moved and from where."""
+    at every zoom. Scatter them at random within SPREAD_M of the shared point instead, at
+    least SPREAD_GAP apart. The randomness is seeded by the record ids, so every build puts
+    each record in the same place. The source coordinate is kept in coord_shared so the
+    record can say it was moved and from where."""
+    import random
     spots = {}
     for d in recs:
         if d['lat'] is not None:
@@ -166,14 +169,25 @@ def spread_shared_spots(recs):
         n = len(group)
         if n < 2:
             continue
-        radius = (SPREAD_M / 2) / math.sin(math.pi / n)   # chord between neighbours = SPREAD_M
-        for i, d in enumerate(sorted(group, key=lambda x: x['id'])):
-            a = 2 * math.pi * i / n
+        group = sorted(group, key=lambda x: x['id'])
+        rng = random.Random('|'.join(x['id'] for x in group))
+        placed, gap = [], SPREAD_GAP
+        for d in group:
+            for attempt in range(2000):
+                # uniform over the disc, not bunched at the centre
+                r = SPREAD_M * math.sqrt(rng.random())
+                a = 2 * math.pi * rng.random()
+                x, y = r * math.sin(a), r * math.cos(a)          # metres east, north
+                if all(math.hypot(x - px, y - py) >= gap for px, py in placed):
+                    break
+                if attempt % 400 == 399:
+                    gap *= 0.9                                   # crowded spot: relax a little
+            placed.append((x, y))
             d['coord_shared'] = f'{lat}, {lon}'
             d['coord_shared_n'] = n
-            d['coord_moved_m'] = round(radius)
-            d['lat'] = round(lat + radius * math.cos(a) / 111320, 6)
-            d['lon'] = round(lon + radius * math.sin(a) / (111320 * math.cos(math.radians(lat))), 6)
+            d['coord_moved_m'] = max(1, round(math.hypot(x, y)))
+            d['lat'] = round(lat + y / 111320, 6)
+            d['lon'] = round(lon + x / (111320 * math.cos(math.radians(lat))), 6)
 
 
 def validate(recs):

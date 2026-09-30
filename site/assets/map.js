@@ -112,6 +112,9 @@ function representatives() {
   const vis = DATA.filter(d => plottable(d) && pass(d));
   if (!ready) return vis.map(d => ({ rep: d, n: 1 }));
   const z = Math.floor(map.getZoom());
+  // At the closest zoom every pin stands alone; records scattered around a shared point
+  // (at least 20 m apart, see spread_shared_spots in build.py) are ~20 px apart there.
+  if (z >= map.getMaxZoom()) return vis.map(d => ({ rep: d, n: 1 }));
   const scale = 512 * Math.pow(2, z), cell = 34;
   const cells = new Map();
   for (const d of vis) {

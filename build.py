@@ -325,6 +325,20 @@ plan and annual figures are published. No advertising, no paywall, no sponsored 
 FOOT = foot()
 
 
+def widen(body, tag='h2'):
+    """Group a reading page into sections, one per <tag> heading, so wide screens can set
+    them in columns (see .page.cols in site.css). Narrow screens are unaffected."""
+    start = body.index('<main class="page')
+    end = body.index('</main>')
+    main = body[start:end]
+    parts = re.split(f'(?=<{tag}[ >])', main)
+    if len(parts) < 3:
+        return body
+    head = parts[0].replace('<main class="page', '<main class="page cols', 1)
+    sections = ''.join(f'<section>{x}</section>' for x in parts[1:])
+    return body[:start] + head + f'<div class="sections">{sections}</div>\n' + body[end:]
+
+
 # ---------------------------------------------------------------- map page
 
 
@@ -661,7 +675,7 @@ def build_register(recs):
   <p><span class="lab">What would place it:</span> {e(stop(d.get('unlock', '')))}</p>
 </div>""" for d in reg)
 
-    body = f"""<main class="page">
+    body = f"""<main class="page register">
 <h1 class="title">The register</h1>
 <p class="lead">{len(reg)} events pass the inclusion rule and cannot be tied to a place with a
 source. They are not deleted and they are never pinned. Each one is published here with the
@@ -674,7 +688,9 @@ archives are closed. Every entry below is an open research question.</p>
 record id and the source.</p>
 
 <h2>Entries</h2>
+<div class="reglist">
 {items}
+</div>
 </main>
 {FOOT}"""
     return shell(('The register \u2014 Still on Record', 'register.html'), body,
@@ -800,6 +816,7 @@ what's wrong, and the source, to
 is logged in public with its date and where it came from.</p>
 </main>
 {FOOT}"""
+    body = widen(body)
     return shell(('Method \u2014 Still on Record', 'method.html'), body,
                  desc='Inclusion rules, evidence tiers, how death figures are recorded, '
                       'and why record density is not severity.')
@@ -892,6 +909,7 @@ pages calls out to a third party except the map tiles and the visitor count.</p>
 <a href="mailto:corrections@stillonrecord.org">corrections@stillonrecord.org</a></p>
 </main>
 {FOOT}"""
+    body = widen(body)
     return shell(('About \u2014 Still on Record', 'about.html'), body)
 
 
@@ -987,6 +1005,7 @@ def build_policy(title, path, lead):
     text = re.sub(r'^#[^#\n]*\n', '', text, count=1)   # drop the H1, the page has its own
     body = (f'<main class="page policy">\n<h1 class="title">{e(title)}</h1>\n'
             f'<p class="lead">{e(lead)}</p>\n{md_to_html(text)}\n</main>\n{FOOT}')
+    body = widen(body, 'h3')
     return shell((f'{title} \u2014 Still on Record', ''), body, desc=lead)
 
 

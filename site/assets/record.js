@@ -44,6 +44,7 @@
 
   function groups() {
     const z = Math.floor(map.getZoom()), scale = 512 * Math.pow(2, z);
+    if (z >= map.getMaxZoom()) return pins.map(p => ({ rep: p, n: 1 }));   // closest zoom: no groups
     const cells = new Map();
     pins.forEach(p => {
       const k = Math.floor(p.mx * scale / CELL) + ':' + Math.floor(p.my * scale / CELL);

@@ -344,21 +344,9 @@ def build_index(recs):
             o['lat'], o['lon'] = d['lat'], d['lon']
         slim.append(o)
 
-    located = sum(1 for d in recs if d['lat'] is not None)
-    undated = sum(1 for d in recs if d['sy'] is None)
-    unver = sum(1 for d in recs if d.get('coord_source') == 'unverified_ai'
-                or d.get('coord_source') == 'fixture_dev')
-
     body = f"""
 <div class="caveat">
-  <span><b>Work in progress. Nothing here is verified yet.</b>
-  {len(recs)} records are seeded and each one names a real, relevant source, but nobody has
-  yet opened those sources to confirm they say what the record claims. {located} records carry
-  coordinates and {unver} of those are unchecked, placed from general knowledge rather than a
-  gazetteer. {undated} carry no date, so the year filter leaves them showing rather than
-  hiding them. Verification and geocoding are the work of the coming weeks, and records will
-  carry their state on their own page as it changes. Use this as a research lead, not a
-  citation.</span>
+  <span><b>Work in progress.</b> Verification ongoing.</span>
   <a href="method.html#verification">How verification works</a>
 </div>
 

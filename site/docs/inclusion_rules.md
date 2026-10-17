@@ -36,4 +36,4 @@ Never store a single number. Store a range with the estimator named, and a `toll
 Non-fatal harm goes in `affected_low` / `affected_high` with `affected_measure` saying what is being counted. Anything weighting pins by size must read `toll_basis` first, or the diffuse harms render as zero.
 
 ## Site roles
-`victim_site`, `perpetrator_site`, `decision_site`, `evidence_site`, `burial_site`. Source sites are a separate layer, off by default. A pin on a boardroom must never read as a pin on a grave.
+`victim_site`, `perpetrator_site`, `decision_site`, `evidence_site`, `burial_site`. Source sites are a separate layer, shown by default and drawn as squares. A pin on a boardroom must never read as a pin on a grave.

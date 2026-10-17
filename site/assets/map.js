@@ -6,7 +6,7 @@
 const DATA = window.RECORDS || [];
 // The year range comes from the slider, which build.py sets to YEAR_FLOOR..current year.
 const Y0 = +document.getElementById('r1').min, Y1 = +document.getElementById('r1').max;
-const S = { lo: Y0, hi: Y1, q: '', cat: null, core: true, src: false, sel: null };
+const S = { lo: Y0, hi: Y1, q: '', cat: null, core: true, src: true, sel: null };
 
 const BASIS = {
   counted: 'Counted: bodies named, exhumed, or entered in the perpetrator\u2019s own register.',
@@ -328,7 +328,7 @@ function writeUrl() {
   if (S.q) p.set('q', S.q);
   if (S.cat) p.set('cat', S.cat);
   if (!S.core) p.set('events', '0');
-  if (S.src) p.set('sources', '1');
+  if (!S.src) p.set('sources', '0');
   const qs = p.toString();
   history.replaceState(null, '',
     location.pathname + (qs ? '?' + qs : '') + (S.sel ? '#' + S.sel : ''));
@@ -344,7 +344,7 @@ function readUrl() {
       x.setAttribute('aria-pressed', String((CAT_SHORT[S.cat] || S.cat) === x.textContent)));
   }
   if (p.get('events') === '0') { S.core = false; tc.setAttribute('aria-pressed', 'false'); }
-  if (p.get('sources') === '1') { S.src = true; ts.setAttribute('aria-pressed', 'true'); }
+  if (p.get('sources') === '0') { S.src = false; ts.setAttribute('aria-pressed', 'false'); }
   const id = location.hash.replace('#', '');
   if (DATA.some(d => d.id === id)) S.sel = id;
 }

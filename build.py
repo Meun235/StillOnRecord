@@ -393,7 +393,7 @@ def build_index(recs):
     <div id="map"></div>
     <div class="toggles">
       <button id="t-core" aria-pressed="true">Events</button>
-      <button id="t-src" aria-pressed="false">Source sites</button>
+      <button id="t-src" aria-pressed="true">Source sites</button>
     </div>
     <div class="key">
       <p class="kh">Status</p>
@@ -782,9 +782,9 @@ repeat the exact error the field exists to catch. When a region looks empty here
 question to ask is which archives are shut.</p>
 
 <h2 id="layers">Pins</h2>
-<p>Events are on by default. Source sites are off. Those are the rooms and works where
-decisions were taken, and they're drawn as squares rather than circles, because a pin on a
-boardroom must never read as a pin on a grave. Records with no location aren't pinned at all.
+<p>Events and source sites are both shown by default, and either can be switched off. Source
+sites are the rooms and works where decisions were taken, and they're drawn as squares rather
+than circles, because a pin on a boardroom must never read as a pin on a grave. Records with no location aren't pinned at all.
 They're in the register.</p>
 <p>Where several records land on the same spot at low zoom, one stands in for the group and the
 others stay hidden until you zoom in. A fixed rule picks the stand-in, so the same view always

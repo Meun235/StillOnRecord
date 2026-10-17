@@ -314,7 +314,7 @@ def shell(title, body, desc=TAGLINE, depth=0, body_class='', extra_head='', extr
 def foot(depth=0):
     up = '../' * depth
     return f"""<footer class="foot"><div class="in">
-Data under the Open Database License, text under CC BY-SA 4.0. Free for any use including
+Data under the Open Database License, text under CC BY-SA 4.0. Free for use including
 commercial, with attribution and share-alike.
 <br><a href="{up}method.html">Method</a> \u00b7 <a href="{up}rules.html">Inclusion rules</a>
 \u00b7 <a href="{up}images.html">Image policy</a> \u00b7 <a href="{up}register.html">Register</a>

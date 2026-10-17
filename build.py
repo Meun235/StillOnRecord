@@ -381,6 +381,17 @@ def build_index(recs):
         </div>
         <span class="yrs" id="years"></span>
       </div>
+      <div class="tline">
+        <span class="tlab" id="ppl-lab">Affected</span>
+        <div class="track">
+          <div class="bar"></div><div class="fill" id="pfill"></div>
+          <input type="range" id="p1" min="0" max="81" step="1" value="0"
+            aria-label="Fewest people affected" aria-describedby="ppl-lab">
+          <input type="range" id="p2" min="0" max="81" step="1" value="81"
+            aria-label="Most people affected" aria-describedby="ppl-lab">
+        </div>
+        <span class="yrs" id="ppl"></span>
+      </div>
     </div>
     <div class="tally">
       <span><b id="nShown">0</b> records listed</span>

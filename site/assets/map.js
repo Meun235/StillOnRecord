@@ -6,7 +6,15 @@
 const DATA = window.RECORDS || [];
 // The year range comes from the slider, which build.py sets to YEAR_FLOOR..current year.
 const Y0 = +document.getElementById('r1').min, Y1 = +document.getElementById('r1').max;
-const S = { lo: Y0, hi: Y1, q: '', cat: null, core: true, src: true, sel: null };
+/* People affected: a logarithmic scale, fine among small numbers and coarse near the top.
+   Ten stops per order of magnitude (1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8), from 0 to 100 million.
+   The top stop means "100 million or more". A record's figure is the largest it gives, of
+   deaths and of people otherwise affected. */
+const PPL = [0];
+for (let k = 0; k < 8; k++) [1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8].forEach(m => PPL.push(Math.round(m * 10 ** k)));
+PPL.push(1e8);
+const PMAX = PPL.length - 1;
+const S = { plo: 0, phi: PMAX, lo: Y0, hi: Y1, q: '', cat: null, core: true, src: true, sel: null };
 
 const BASIS = {
   counted: 'Counted: bodies named, exhumed, or entered in the perpetrator\u2019s own register.',
@@ -41,6 +49,8 @@ const reduced = () => window.matchMedia('(prefers-reduced-motion:reduce)').match
 DATA.forEach(d => {
   d.hay = [d.event_name, d.place_name, d.country_today, d.perpetrator, d.key_source,
     d.target_group, d.parent_campaign, d.category].filter(Boolean).join(' ').toLowerCase();
+  const figs = [d.deaths_low, d.deaths_high, d.affected_low, d.affected_high].map(Number).filter(n => n > 0);
+  d.mag = figs.length ? Math.max(...figs) : undefined;
   d.role = d.layer === 'source_sites' ? 'source'
     : (['region', 'route', 'network'].includes(d.geometry_type) ? 'area' : 'point');
 });
@@ -50,6 +60,11 @@ function pass(d) {
   // so a chosen period only lists records known to fall in it.
   if (d.sy === undefined) { if (S.lo !== Y0 || S.hi !== Y1) return false; }
   else if (d.sy > S.hi || d.ey < S.lo) return false;
+  // As with dates: records without a figure show at the full range and drop out once narrowed.
+  if (S.plo !== 0 || S.phi !== PMAX) {
+    if (d.mag === undefined || d.mag < PPL[S.plo]) return false;
+    if (S.phi !== PMAX && d.mag > PPL[S.phi]) return false;
+  }
   if (S.q && !d.hay.includes(S.q)) return false;
   if (S.cat && d.category !== S.cat) return false;
   return d.layer === 'source_sites' ? S.src : S.core;
@@ -308,6 +323,22 @@ function syncT() {
 r1.addEventListener('input', syncT);
 r2.addEventListener('input', syncT);
 
+const p1 = document.getElementById('p1'), p2 = document.getElementById('p2');
+const pfmt = n => n >= 1e6 ? (n / 1e6).toLocaleString('en-GB', { maximumFractionDigits: 1 }) + 'M'
+  : n.toLocaleString('en-GB');
+function syncP(redraw) {
+  S.plo = Math.min(+p1.value, +p2.value);
+  S.phi = Math.max(+p1.value, +p2.value);
+  document.getElementById('ppl').textContent =
+    pfmt(PPL[S.plo]) + '\u2013' + (S.phi === PMAX ? '100M+' : pfmt(PPL[S.phi]));
+  const f = document.getElementById('pfill');
+  f.style.left = (S.plo / PMAX * 100) + '%';
+  f.style.width = ((S.phi - S.plo) / PMAX * 100) + '%';
+  if (redraw !== false) draw();
+}
+p1.addEventListener('input', syncP);
+p2.addEventListener('input', syncP);
+
 let anim = null;
 document.getElementById('play').onclick = function () {
   if (anim) { cancelAnimationFrame(anim); anim = null; this.textContent = 'Run'; return; }
@@ -328,6 +359,7 @@ document.getElementById('play').onclick = function () {
 function writeUrl() {
   const p = new URLSearchParams();
   if (S.lo !== Y0 || S.hi !== Y1) p.set('years', S.lo + '-' + S.hi);
+  if (S.plo !== 0 || S.phi !== PMAX) p.set('people', PPL[S.plo] + '-' + (S.phi === PMAX ? '' : PPL[S.phi]));
   if (S.q) p.set('q', S.q);
   if (S.cat) p.set('cat', S.cat);
   if (!S.core) p.set('events', '0');
@@ -340,6 +372,11 @@ function readUrl() {
   const p = new URLSearchParams(location.search);
   const y = (p.get('years') || '').match(/^(\d{4})-(\d{4})$/);
   if (y) { r1.value = y[1]; r2.value = y[2]; }
+  const pp = (p.get('people') || '').match(/^(\d+)-(\d*)$/);
+  if (pp) {
+    const near = v => PPL.reduce((best, x, i) => Math.abs(x - v) < Math.abs(PPL[best] - v) ? i : best, 0);
+    p1.value = near(+pp[1]); p2.value = pp[2] ? near(+pp[2]) : PMAX;
+  }
   if (p.get('q')) { S.q = p.get('q').toLowerCase(); document.getElementById('q').value = p.get('q'); }
   if (p.get('cat')) {
     S.cat = p.get('cat');
@@ -361,5 +398,6 @@ function openFromHash() {
 }
 
 readUrl();
+syncP(false);
 syncT();
 initMap();

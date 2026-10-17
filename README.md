@@ -89,6 +89,8 @@ Records that share one exact coordinate in the CSV are scattered at random withi
 
 Where several records fall in one place at low zoom, one stands in for the group and the rest are hidden. The stand-in is picked by a fixed rule, so the same view always shows the same record: parent campaign row first, then evidence tier, then death figure, then earliest start year. There are no cluster bubbles with counts, deliberately. A bubble reading 44,000 next to one reading 12 makes a quantitative claim the data can't support.
 
+The people-affected slider runs from 0 to 100 million on a logarithmic scale, ten stops per order of magnitude, so it is fine among small numbers and coarse near the top. A record counts by the largest figure it gives, of deaths and of people otherwise affected; records with no figure behave like undated ones below.
+
 Records with no date are published and show while the year slider spans its full range. Once the slider is narrowed they drop out, so a chosen period only lists records known to fall in it. `map.js` renders them as "Date not recorded".
 
 ## Deploying
@@ -143,7 +145,7 @@ Empty `start_year` is allowed. Those records publish, and show while the year sl
 
 ## Done
 
-- map, index, filters, time slider, layer toggles, search
+- map, index, filters, time slider, people-affected slider, layer toggles, search
 - deterministic representative points, keyboard and screen reader paths
 - filter and selection state in the URL, so a view can be shared and cited
 - static record pages with sibling and campaign navigation

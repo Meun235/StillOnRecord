@@ -887,11 +887,12 @@ details, although I don't expect anything for this work.</p>
 anything, including commercially. Credit it, and keep whatever you build from it open.</p>
 
 <h2>Standing on other people's work</h2>
-<p>This exists because gulag.online showed it could be done.</p>
-<p>It leans on Memorial, the United States Holocaust Memorial Museum, the Documentation Center
-of Cambodia, the University of Newcastle's frontier massacre project, SlaveVoyages, the UCSF
-Industry Documents Library and ToxicDocs. Above all it leans on the truth commissions and the
-tribunals, whose findings are what make most of these records possible at all.</p>
+<p>The data leans on memorials, documentation centres, university projects, academic books and
+libraries. Above all it leans on the truth commissions and tribunals, and sometimes survivors'
+testimony, whose findings are what make most of these records possible at all.</p>
+<p>Books by survivors made this site possible, such as Aleksandr Solzhenitsyn (Александр
+Солженицын), <i>The Gulag Archipelago</i>, and Yang Jisheng (杨继绳), <i>Tombstone: The Great
+Chinese Famine, 1958–1962</i>. I would highly recommend reading the books yourself.</p>
 <p>Type is IBM Plex, under the SIL Open Font License, served from this site rather than from
 Google. The map library is MapLibre GL, BSD licensed, also served from here. Nothing on these
 pages calls out to a third party except the map tiles and the visitor count.</p>

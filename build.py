@@ -868,12 +868,6 @@ there.</p>
 names its source, and checking each record against that source is ongoing. Coordinates are
 approximate.</p>
 
-<h2>The name</h2>
-<p>These events are still on record. The documents survived. The judgments were handed down,
-the registers were kept, the photographs were taken. Denial works by betting that nobody will
-go and look.</p>
-<p>So this goes and looks, and shows its working.</p>
-
 <h2>Who runs it</h2>
 <p>My name is Stefan Meun and I run this site on my own. That includes all data sourcing,
 verification, hosting and maintenance, research and development.</p>

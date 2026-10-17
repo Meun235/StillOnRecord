@@ -215,9 +215,6 @@ h3{font-family:var(--serif);font-weight:400;font-size:16px;margin:24px 0 7px}
   font-size:13.5px;color:var(--ink-soft);line-height:1.5}
 [data-st="contested"] .statusline{border-left-color:var(--contested)}
 [data-st="ongoing_adjudication"] .statusline{border-left-color:var(--ongoing)}
-.banner{background:var(--sunk);border:1px solid var(--rule);padding:11px 14px;
-  font-size:13px;line-height:1.55;color:var(--ink-soft);margin:0 0 24px}
-.banner b{color:var(--ink);font-weight:450}
 dl.record{margin:0;display:grid;grid-template-columns:150px 1fr;gap:11px 18px;
   font-size:14.5px;line-height:1.55;padding-top:16px;border-top:1px solid var(--rule)}
 dl.record dt{color:var(--ink-soft);font-size:13.5px}

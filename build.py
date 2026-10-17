@@ -885,8 +885,6 @@ details, although I don't expect anything for this work.</p>
 <h2>Licence</h2>
 <p>The data is under the Open Database License and the text under CC BY-SA 4.0. Use it for
 anything, including commercially. Credit it, and keep whatever you build from it open.</p>
-<p>The whole dataset is <a href="data/dataset.csv">a single file you can download</a>, and
-every record is also there as JSON.</p>
 
 <h2>Standing on other people's work</h2>
 <p>This exists because gulag.online showed it could be done.</p>

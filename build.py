@@ -381,6 +381,17 @@ def build_index(recs):
         </div>
         <span class="yrs" id="years"></span>
       </div>
+      <div class="tline">
+        <span class="tlab" id="ppl-lab">Affected</span>
+        <div class="track">
+          <div class="bar"></div><div class="fill" id="pfill"></div>
+          <input type="range" id="p1" min="0" max="81" step="1" value="0"
+            aria-label="Fewest people affected" aria-describedby="ppl-lab">
+          <input type="range" id="p2" min="0" max="81" step="1" value="81"
+            aria-label="Most people affected" aria-describedby="ppl-lab">
+        </div>
+        <span class="yrs" id="ppl"></span>
+      </div>
     </div>
     <div class="tally">
       <span><b id="nShown">0</b> records listed</span>
@@ -393,7 +404,7 @@ def build_index(recs):
     <div id="map"></div>
     <div class="toggles">
       <button id="t-core" aria-pressed="true">Events</button>
-      <button id="t-src" aria-pressed="false">Source sites</button>
+      <button id="t-src" aria-pressed="true">Source sites</button>
     </div>
     <div class="key">
       <p class="kh">Status</p>
@@ -627,9 +638,6 @@ def build_record(d, recs):
 <p class="statusline">{e(d['category'])}. Tier {e(d['evidence_tier'])},
 {e(STATUS.get(st, st).lower())}.</p>
 
-<p class="banner"><b>Seeded, not yet verified.</b> The source below is real and relevant, and
-nobody has yet opened it to confirm it says what this record claims. Treat it as a lead until
-that happens. <a href="../method.html#verification">How verification works</a></p>
 </div>
 
 <aside class="rec-side">
@@ -733,14 +741,9 @@ somebody knew about and turned down?</p>
 nobody could patent it, which is the whole reason tetraethyl lead won. So the harm itself is on
 the map, and so is the laboratory in Dayton where the choice was made.</p>
 <p>Fossil fuels pass both questions. Roughly half the world eats because of nitrogen fixed with
-natural gas, and for most of the twentieth century there was nothing else. So combustion isn't
-mapped here. The concealment is: the research the industry commissioned and shelved, the
-coalition whose own scientific advisers wrote that the greenhouse effect couldn't be refuted
-before that passage was cut, the communications plan that set out to make uncertainty
-conventional wisdom. Most of pharmaceuticals belongs in this group too. The wrong in Vioxx was
-the buried cardiovascular signal, not the existence of a painkiller.</p>
-<p>Tobacco has nothing on the other side of the ledger, so both the harm and the concealment
-are here.</p>
+natural gas, and for most of the twentieth century there was nothing else. So they aren't on the
+map. This site maps direct harm to people.</p>
+<p>Tobacco has nothing on the other side of the ledger, so its harm is here.</p>
 
 <h2 id="tiers">How good is the source</h2>
 <p>Three tiers, and they're about the kind of document rather than how much anyone trusts it.</p>
@@ -782,9 +785,9 @@ repeat the exact error the field exists to catch. When a region looks empty here
 question to ask is which archives are shut.</p>
 
 <h2 id="layers">Pins</h2>
-<p>Events are on by default. Source sites are off. Those are the rooms and works where
-decisions were taken, and they're drawn as squares rather than circles, because a pin on a
-boardroom must never read as a pin on a grave. Records with no location aren't pinned at all.
+<p>Events and source sites are both shown by default, and either can be switched off. Source
+sites are the rooms and works where decisions were taken, and they're drawn as squares rather
+than circles, because a pin on a boardroom must never read as a pin on a grave. Records with no location aren't pinned at all.
 They're in the register.</p>
 <p>Where several records land on the same spot at low zoom, one stands in for the group and the
 others stay hidden until you zoom in. A fixed rule picks the stand-in, so the same view always
@@ -794,12 +797,13 @@ earliest year.</p>
 invites precisely the conclusion the completeness field exists to prevent.</p>
 
 <h2 id="verification">Verification</h2>
-<p>Nobody cites a source they haven't opened. That's the rule the whole project rests on.</p>
-<p>The seeded records name documents that exist and are relevant, but they were assembled from
-research rather than from reading each one end to end. Until somebody opens the named document
-and checks the event, the place, the dates, the perpetrator and the figure separately, the
-record says so on its own page.</p>
-<p>A correction that moves a record from confirmed to contested is a good day, not a bad one.</p>
+<p>Every record names the document it rests on, with its evidence tier and status beside it.
+Records are checked against that document as the work goes on: the event, the place, the dates,
+the perpetrator and the figure, each on its own. Where a check changes something, the record is
+corrected.</p>
+<p>A correction that moves a record from confirmed to contested is a good day, not a bad one. If a
+record says something its source doesn't, send the record id and the source to
+<a href="mailto:corrections@stillonrecord.org">corrections@stillonrecord.org</a>.</p>
 
 <h2 id="images">Images</h2>
 <p>Images go up where they document something the record needs. Scale, conditions, method, the
@@ -861,12 +865,9 @@ method page</a> goes into.</p>
 there.</p>
 
 <h2>Where it's up to</h2>
-<p>Seed stage, and honestly so. There are {n} records here, {located} of them with coordinates.
-Every one names a real and relevant source. Not one of those sources has yet been opened and
-checked line by line, and the coordinates were placed from general knowledge rather than a
-gazetteer.</p>
-<p>Records carry their own state on their own page. Read it before you cite anything. The work
-of the coming months is verification, and the site will say so until it's done.</p>
+<p>Work in progress. There are {n} records here, {located} of them with coordinates. Every one
+names its source, and checking each record against that source is ongoing. Coordinates are
+approximate.</p>
 
 <h2>The name</h2>
 <p>These events are still on record. The documents survived. The judgments were handed down,
@@ -1068,7 +1069,7 @@ def write_artifacts(recs):
             'Suggested citation:\n'
             '  Still on Record (stillonrecord.org), record EV####, retrieved '
             + date.today().isoformat() + ', ODbL 1.0.\n\n'
-            'Records are seeded and largely unverified. Each one names its source.\n'
+            'Work in progress: verification against sources is ongoing. Each record names its source.\n'
             'Check the source before relying on anything here.\n')
 
 

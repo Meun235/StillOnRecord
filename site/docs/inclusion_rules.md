@@ -18,11 +18,11 @@ Where the harm comes from a product or technology rather than an attack, two fur
 
 **Alternative existed and was rejected.** The harm itself is mappable. Leaded petrol qualifies: ethanol worked and could not be patented. Asbestos qualifies. White phosphorus in matches qualifies: red phosphorus worked and cost more.
 
-**Real benefit, no comparable alternative.** Only the concealment is mappable, as decision and evidence sites. No mortality row, no combustion layer. Fossil fuels sit here. So does most of pharmaceuticals: the wrong in Vioxx is the buried cardiovascular signal, not the existence of an anti-inflammatory.
+**Real benefit, no comparable alternative.** The product itself is not mappable. Concealment is mappable only where it caused direct harm to people. Most of pharmaceuticals sits here: the wrong in Vioxx is the buried cardiovascular signal, not the existence of an anti-inflammatory, and its patients can be counted. Fossil fuels also sit here and are not mapped at all: the harm from concealing climate science is real but global and indirect, with no people or place it can be tied to.
 
 **No offsetting benefit.** Both the harm and the concealment are mappable. Tobacco sits here.
 
-This test is why the file contains six fossil fuel source sites and no fossil fuel death toll. Mortality from combustion is real and large, and it is not separable from the mortality that fossil fuels prevented. The concealment is separable, documented, and litigated.
+This test is why the file contains no fossil fuel records. Mortality from combustion is real and large, and it is not separable from the mortality that fossil fuels prevented.
 
 ## Toll recording
 Never store a single number. Store a range with the estimator named, and a `toll_basis` saying what kind of number it is:
@@ -36,4 +36,4 @@ Never store a single number. Store a range with the estimator named, and a `toll
 Non-fatal harm goes in `affected_low` / `affected_high` with `affected_measure` saying what is being counted. Anything weighting pins by size must read `toll_basis` first, or the diffuse harms render as zero.
 
 ## Site roles
-`victim_site`, `perpetrator_site`, `decision_site`, `evidence_site`, `burial_site`. Source sites are a separate layer, off by default. A pin on a boardroom must never read as a pin on a grave.
+`victim_site`, `perpetrator_site`, `decision_site`, `evidence_site`, `burial_site`. Source sites are a separate layer, shown by default and drawn as squares. A pin on a boardroom must never read as a pin on a grave.

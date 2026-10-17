@@ -733,12 +733,13 @@ somebody knew about and turned down?</p>
 nobody could patent it, which is the whole reason tetraethyl lead won. So the harm itself is on
 the map, and so is the laboratory in Dayton where the choice was made.</p>
 <p>Fossil fuels pass both questions. Roughly half the world eats because of nitrogen fixed with
-natural gas, and for most of the twentieth century there was nothing else. So combustion isn't
-mapped here. The concealment is: the research the industry commissioned and shelved, the
-coalition whose own scientific advisers wrote that the greenhouse effect couldn't be refuted
-before that passage was cut, the communications plan that set out to make uncertainty
-conventional wisdom. Most of pharmaceuticals belongs in this group too. The wrong in Vioxx was
-the buried cardiovascular signal, not the existence of a painkiller.</p>
+natural gas, and for most of the twentieth century there was nothing else. They aren't on the map,
+and neither is the industry's concealment of climate science. That concealment is documented, but
+the harm it added is a global delay, not harm to people that can be traced to a place. This site
+maps direct harm to people.</p>
+<p>Concealment is mapped where it led to that kind of harm. Most of pharmaceuticals sits here. The
+wrong in Vioxx was the buried cardiovascular signal, not the existence of a painkiller, and the
+patients it harmed can be counted.</p>
 <p>Tobacco has nothing on the other side of the ledger, so both the harm and the concealment
 are here.</p>
 

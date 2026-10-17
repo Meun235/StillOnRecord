@@ -829,8 +829,6 @@ is logged in public with its date and where it came from.</p>
 
 
 def build_about(recs):
-    n = len(recs)
-    located = sum(1 for d in recs if d['lat'] is not None)
     if ANALYTICS:
         privacy = (
             '<p>Visitor counts come from GoatCounter, which is open source, hosted in the EU '
@@ -862,11 +860,6 @@ compare and the death figures can't be added up, for reasons the <a href="method
 method page</a> goes into.</p>
 <p>It isn't a verdict either. Where proceedings are live, the record names the case and stops
 there.</p>
-
-<h2>Where it's up to</h2>
-<p>Work in progress. There are {n} records here, {located} of them with coordinates. Every one
-names its source, and checking each record against that source is ongoing. Coordinates are
-approximate.</p>
 
 <h2>Who runs it</h2>
 <p>My name is Stefan Meun and I run this site on my own. That includes all data sourcing,

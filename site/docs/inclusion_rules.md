@@ -22,7 +22,7 @@ Where the harm comes from a product or technology rather than an attack, two fur
 
 **No offsetting benefit.** Both the harm and the concealment are mappable. Tobacco sits here.
 
-This test is why the file contains six fossil fuel source sites and no fossil fuel death toll. Mortality from combustion is real and large, and it is not separable from the mortality that fossil fuels prevented. The concealment is separable, documented, and litigated.
+This test is why the file contains five fossil fuel source sites and no fossil fuel death toll. Mortality from combustion is real and large, and it is not separable from the mortality that fossil fuels prevented. The concealment is separable, documented, and litigated.
 
 ## Toll recording
 Never store a single number. Store a range with the estimator named, and a `toll_basis` saying what kind of number it is:

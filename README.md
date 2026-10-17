@@ -163,7 +163,7 @@ Empty `start_year` is allowed. Those records publish, and show while the year sl
 - **The inline data split.** 370 KB before first paint, and growing. See "What gets built".
 - Region, route and network geometries. They render as a point with a dashed ring today. Points carry the project; polygons can wait.
 - Recently-added changelog, driven from git history rather than written by hand.
-- `about.html` names a stichting that has no name in it yet, and the correction addresses don't exist yet.
+- The correction addresses don't exist yet.
 - The stale generated files still committed under `site/` should be deleted. `site/data/`, `site/assets/`, `site/docs/` and `site/images/` stay.
 
 ## Documents

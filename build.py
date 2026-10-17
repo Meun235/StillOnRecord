@@ -315,8 +315,8 @@ def foot(depth=0):
     up = '../' * depth
     return f"""<footer class="foot"><div class="in">
 Data under the Open Database License, text under CC BY-SA 4.0. Free for any use including
-commercial, with attribution and share-alike. Run by a Netherlands stichting; board, policy
-plan and annual figures are published. No advertising, no paywall, no sponsored content.
+commercial, with attribution and share-alike. Run by Stefan Meun as a private project.
+No advertising, no paywall, no sponsored content.
 <br><a href="{up}method.html">Method</a> \u00b7 <a href="{up}rules.html">Inclusion rules</a>
 \u00b7 <a href="{up}images.html">Image policy</a> \u00b7 <a href="{up}register.html">Register</a>
 </div></footer>"""
@@ -876,12 +876,12 @@ go and look.</p>
 <p>So this goes and looks, and shows its working.</p>
 
 <h2>Who runs it</h2>
-<p>A stichting registered in the Netherlands. The board, the policy plan and the annual figures
-are published.</p>
-<p>No advertising, no paywall, nothing sponsored. Donations cover the hosting, which is close
-to nothing because the site is static files. Research and development are funded by grants and
-commissioned work, and the accounts are public. If you want to know who pays for this, the
-answer is on the page rather than in an email.</p>
+<p>My name is Stefan Meun and I run this site on my own. That includes all data sourcing,
+verification, hosting and maintenance, research and development.</p>
+<p>I hate advertising, so there's no advertising. I also hate paywalls and sponsors, so none of
+that either. I don't think they're appropriate for this subject anyway. If you want to know who
+pays for this, the answer is again me. Donations are welcome: email me for bank transfer
+details, although I don't expect anything for this work.</p>
 
 <h2>Licence</h2>
 <p>The data is under the Open Database License and the text under CC BY-SA 4.0. Use it for

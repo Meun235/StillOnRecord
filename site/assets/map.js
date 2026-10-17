@@ -46,7 +46,10 @@ DATA.forEach(d => {
 });
 
 function pass(d) {
-  if (d.sy > S.hi || d.ey < S.lo) return false;
+  // Undated records show while the slider spans the full range, and drop out once it's narrowed,
+  // so a chosen period only lists records known to fall in it.
+  if (d.sy === undefined) { if (S.lo !== Y0 || S.hi !== Y1) return false; }
+  else if (d.sy > S.hi || d.ey < S.lo) return false;
   if (S.q && !d.hay.includes(S.q)) return false;
   if (S.cat && d.category !== S.cat) return false;
   return d.layer === 'source_sites' ? S.src : S.core;

@@ -89,7 +89,7 @@ Records that share one exact coordinate in the CSV are scattered at random withi
 
 Where several records fall in one place at low zoom, one stands in for the group and the rest are hidden. The stand-in is picked by a fixed rule, so the same view always shows the same record: parent campaign row first, then evidence tier, then death figure, then earliest start year. There are no cluster bubbles with counts, deliberately. A bubble reading 44,000 next to one reading 12 makes a quantitative claim the data can't support.
 
-Records with no date are published and stay visible at every slider position, because unknown shouldn't mean excluded. `map.js` renders them as "Date not recorded".
+Records with no date are published and show while the year slider spans its full range. Once the slider is narrowed they drop out, so a chosen period only lists records known to fall in it. `map.js` renders them as "Date not recorded".
 
 ## Deploying
 
@@ -139,7 +139,7 @@ Validation fails the build, it doesn't warn. Current rules:
 - an `image_licence` outside `own`, `public_domain`, `cc0`, `cc_by`, `cc_by_sa`, `permission`
 - an `image_tier` outside A, B, C, or a tier C image with no warning line
 
-Empty `start_year` is allowed. Those records publish, and stay visible at every slider position.
+Empty `start_year` is allowed. Those records publish, and show while the year slider is at its full range.
 
 ## Done
 

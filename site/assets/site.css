@@ -297,6 +297,7 @@ dl.record dd{margin:0;overflow-wrap:anywhere}
   .page.cols .lead{max-width:none}
   .page.cols .sections{columns:2;column-gap:64px;margin-top:10px}
   .page.cols section{break-inside:avoid;padding-bottom:22px}
+  .page.cols .sections.split{columns:auto;display:grid;grid-template-columns:1fr 1fr;column-gap:64px;align-items:start}
   .page.cols section>h2:first-child,.page.cols section>h3:first-child{margin-top:14px}
   .page.cols section p,.page.cols section ul{max-width:none}
   .page.cols section table{display:block;overflow-x:auto}

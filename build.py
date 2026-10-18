@@ -862,36 +862,44 @@ method page</a> goes into.</p>
 there.</p>
 
 <h2>Who runs it?</h2>
-<p>Who would take on such a big and dark task? It's a question I asked myself, and one that may
+<p>Who would take on such a big and dark task? It’s a question I asked myself, and one that may
 also occur to you as a reader.</p>
 <p>My name is Stefan Meun and I run this site on my own. That includes all data sourcing,
 verification, hosting and maintenance, research and development. I think my unique skills and
 interests make it more efficient and bearable for me in particular. My day job is IT
-administrator, and I'm good at working with local LLMs (AI) and building systems around them. I
+administrator, and I’m good at working with local LLMs (AI) and building systems around them. I
 like history and I like taking on challenging projects. Honesty compels me to admit they usually
 end in misery and failure, but not always, and at least I can say I tried and learned from it.
-My mother sometimes asks why I never take the easy path in life, and I'm not sure either. To me
-it seems dull, and irresponsible, not to carry as much as you can carry. This website is
-something I figured I could carry next to my work and family life, so I do. And evidently you're
-reading this, so I guess I was right and this wasn't one of those failures.</p>
+My mother sometimes asks why I never take the easy path in life, and I’m not sure either. To me
+it seems dull and irresponsible not to carry as much as you can carry. This website is something
+I figured I could carry next to my work and family life, so I do. And evidently you’re reading
+this, so I guess I was right and this wasn’t one of those failures.</p>
 
 <h2>Why run it?</h2>
-<p>The question of why may then also occur to you. Why carry this in particular, and not
-something else? I'm sometimes surprised at how day-to-day life carries on as if nothing ever
-happened, and I guess for most people it practically didn't, because they simply don't know.</p>
-<p>We all know the Beatles, Bob Dylan and Elvis Presley and the songs they made around 1960, but
-most of us have never heard of Linxia city, where in those same years more than 41,000 people
-died in a man-made famine, in detail so horrible that only reading about it would make you
-remember it for the rest of your life. We all know about the Wall Street crash and the Great Depression, but what
-about the Holodomor in those same years? The mass suffering of millions, killing between 3.5 and
-5 million people.</p>
-<p>I don't think not knowing is an active choice for the people who don't know. My Western
-education never mentioned any of this to me either, not even briefly. I was shielded from the
-world by a history book barely thicker than a pencil, and I had to find all these victims
-myself. Most people know George Santayana's quote, "Those who cannot remember the past are
-condemned to repeat it." But most people don't remember anyway. This site tries to be a tool for
-people who want to know and remember, to explore what they don't know and remember it. I don't
-want any of these events repeated, and that's why I think it's good they're still on record.</p>
+<p>Why carry this in particular, and not something else? I’m sometimes surprised at how
+day-to-day life carries on as if nothing ever happened, and I guess for most people it
+practically didn’t, because they simply don’t know.</p>
+<p>We all know Elvis Presley and the hits he had around 1960, but most of us have never heard of
+Linxia, in China, where in those same years tens of thousands of people died in a man-made famine
+in that city alone. Cannibalism out of sheer starvation was rampant across China. There are
+accounts of people killing, boiling and eating a six-year-old daughter or a four-year-old nephew,
+and of others stealing a child’s corpse from a grave to boil and eat it. (Source: <a href="https://laogairesearch.org/wp-content/uploads/2018/08/cannibalism-report.pdf"><i>Cannibalism
+in Communist China</i></a>, Laogai Research Foundation, page 5.)</p>
+<p>We all know about the Wall Street crash and the Great Depression, but what about the Holodomor
+(Ukrainian for “killing by starvation”) in those same years? Between 3.5 and 5 million people
+starved to death. Cannibalism and necrophagy (corpse-eating) were common too, and many parents
+were reported to have eaten their children. In one case, a collective farmer slaughtered her two
+children and ate them, one of them at Easter. When asked why, she answered: “Shoot me, so I don’t
+suffer: that’s what starvation brings you to.” (Source: one of the <a href="https://www.pravda.com.ua/eng/news/2023/11/25/7430352/">1,022 cannibalism
+cases from 1932–33</a> that Ukraine’s Interior Ministry handed over to the Holodomor Museum in Kyiv.)</p>
+<p>I don’t think not knowing is an active choice for the people who don’t know. My Western
+education (although I’m sure other parts of the world have the same problem) never mentioned any
+of this to me either, not even briefly. I was shielded from the world by a history book barely
+thicker than a pencil, and I had to find all these victims myself. Most people know George
+Santayana’s quote, “Those who cannot remember the past are condemned to repeat it.” But most
+people remember just that, the quote, and not the actual past. This site tries to be a tool for
+people who want to know and remember. I don’t want any of these events repeated, and I think
+that’s plenty of reason to pick this over anything else. And that’s why it’s still on record.</p>
 
 <h2>How is it paid for?</h2>
 <p>I hate advertising, so there's no advertising. I also hate paywalls and sponsors, so none of

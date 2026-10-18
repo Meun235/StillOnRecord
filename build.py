@@ -904,9 +904,8 @@ that’s plenty of reason to pick this over anything else. And that’s why it�
 <h2>How is it paid for?</h2>
 <p>I hate advertising, so there's no advertising. I also hate paywalls and sponsors, so none of
 that either. I don't think they're appropriate for this subject anyway. If you want to know who
-pays for this, the answer is again me. Donations are welcome: email me at
-<a href="mailto:admin@stillonrecord.org">admin@stillonrecord.org</a> for bank transfer details,
-although I don't expect anything for this work.</p>
+pays for this, the answer is again me. Donations are welcome: email me for bank transfer
+details, although I don't expect anything for this work.</p>
 
 <h2>Licence</h2>
 <p>The data is under the Open Database License and the text under CC BY-SA 4.0. Use it for

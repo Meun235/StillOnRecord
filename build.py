@@ -861,13 +861,44 @@ method page</a> goes into.</p>
 <p>It isn't a verdict either. Where proceedings are live, the record names the case and stops
 there.</p>
 
-<h2>Who runs it</h2>
+<h2>Who runs it?</h2>
+<p>Who would take on such a big and dark task? It's a question I asked myself, and one that may
+also occur to you as a reader.</p>
 <p>My name is Stefan Meun and I run this site on my own. That includes all data sourcing,
-verification, hosting and maintenance, research and development.</p>
+verification, hosting and maintenance, research and development. I think my unique skills and
+interests make it more efficient and bearable for me in particular. My day job is IT
+administrator, and I'm good at working with local LLMs (AI) and building systems around them. I
+like history and I like taking on challenging projects. Honesty compels me to admit they usually
+end in misery and failure, but not always, and at least I can say I tried and learned from it.
+My mother sometimes asks why I never take the easy path in life, and I'm not sure either. To me
+it seems dull, and irresponsible, not to carry as much as you can carry. This website is
+something I figured I could carry next to my work and family life, so I do. And evidently you're
+reading this, so I guess I was right and this wasn't one of those failures.</p>
+
+<h2>Why run it?</h2>
+<p>The question of why may then also occur to you. Why carry this in particular, and not
+something else? I'm sometimes surprised at how day-to-day life carries on as if nothing ever
+happened, and I guess for most people it practically didn't, because they simply don't know.</p>
+<p>We all know the Beatles, Bob Dylan and Elvis Presley and the songs they made around 1960, but
+most of us have never heard of Linxia city, where in those same years more than 41,000 people
+died in a man-made famine, in detail so horrible that just reading about it stays with you for
+the rest of your life. We all know about the Wall Street crash and the Great Depression, but what
+about the Holodomor in those same years? The mass suffering of millions, killing between 3.5 and
+5 million people.</p>
+<p>I don't think not knowing is an active choice for the people who don't know. My Western
+education never mentioned any of this to me either, not even briefly. I was shielded from the
+world by a history book barely thicker than a pencil, and I had to find all these victims
+myself. Most people know George Santayana's quote, "Those who cannot remember the past are
+condemned to repeat it." But most people don't remember anyway. This site tries to be a tool for
+people who want to know and remember, to explore what they don't know and remember it. I don't
+want any of these events repeated, and that's why I think it's good they're still on record.</p>
+
+<h2>How is it paid for?</h2>
 <p>I hate advertising, so there's no advertising. I also hate paywalls and sponsors, so none of
 that either. I don't think they're appropriate for this subject anyway. If you want to know who
-pays for this, the answer is again me. Donations are welcome: email me for bank transfer
-details, although I don't expect anything for this work.</p>
+pays for this, the answer is again me. Donations are welcome: email me at
+<a href="mailto:admin@stillonrecord.org">admin@stillonrecord.org</a> for bank transfer details,
+although I don't expect anything for this work.</p>
 
 <h2>Licence</h2>
 <p>The data is under the Open Database License and the text under CC BY-SA 4.0. Use it for

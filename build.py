@@ -314,7 +314,7 @@ def shell(title, body, desc=TAGLINE, depth=0, body_class='', extra_head='', extr
 def foot(depth=0):
     up = '../' * depth
     return f"""<footer class="foot"><div class="in">
-Data under the Open Database License, text under CC BY-SA 4.0. Free for any use including
+Data under the Open Database License, text under CC BY-SA 4.0. Free for use including
 commercial, with attribution and share-alike.
 <br><a href="{up}method.html">Method</a> \u00b7 <a href="{up}rules.html">Inclusion rules</a>
 \u00b7 <a href="{up}images.html">Image policy</a> \u00b7 <a href="{up}register.html">Register</a>
@@ -829,8 +829,6 @@ is logged in public with its date and where it came from.</p>
 
 
 def build_about(recs):
-    n = len(recs)
-    located = sum(1 for d in recs if d['lat'] is not None)
     if ANALYTICS:
         privacy = (
             '<p>Visitor counts come from GoatCounter, which is open source, hosted in the EU '
@@ -863,37 +861,56 @@ method page</a> goes into.</p>
 <p>It isn't a verdict either. Where proceedings are live, the record names the case and stops
 there.</p>
 
-<h2>Where it's up to</h2>
-<p>Work in progress. There are {n} records here, {located} of them with coordinates. Every one
-names its source, and checking each record against that source is ongoing. Coordinates are
-approximate.</p>
-
-<h2>The name</h2>
-<p>These events are still on record. The documents survived. The judgments were handed down,
-the registers were kept, the photographs were taken. Denial works by betting that nobody will
-go and look.</p>
-<p>So this goes and looks, and shows its working.</p>
-
-<h2>Who runs it</h2>
+<h2>Who runs it?</h2>
+<p>Who would take on such a big and dark task? It's a question I asked myself, and one that may
+also occur to you as a reader.</p>
 <p>My name is Stefan Meun and I run this site on my own. That includes all data sourcing,
-verification, hosting and maintenance, research and development.</p>
+verification, hosting and maintenance, research and development. I think my unique skills and
+interests make it more efficient and bearable for me in particular. My day job is IT
+administrator, and I'm good at working with local LLMs (AI) and building systems around them. I
+like history and I like taking on challenging projects. Honesty compels me to admit they usually
+end in misery and failure, but not always, and at least I can say I tried and learned from it.
+My mother sometimes asks why I never take the easy path in life, and I'm not sure either. To me
+it seems dull, and irresponsible, not to carry as much as you can carry. This website is
+something I figured I could carry next to my work and family life, so I do. And evidently you're
+reading this, so I guess I was right and this wasn't one of those failures.</p>
+
+<h2>Why run it?</h2>
+<p>The question of why may then also occur to you. Why carry this in particular, and not
+something else? I'm sometimes surprised at how day-to-day life carries on as if nothing ever
+happened, and I guess for most people it practically didn't, because they simply don't know.</p>
+<p>We all know the Beatles, Bob Dylan and Elvis Presley and the songs they made around 1960, but
+most of us have never heard of Linxia city, where in those same years more than 41,000 people
+died in a man-made famine, in detail so horrible that only reading about it would make you
+remember it for the rest of your life. We all know about the Wall Street crash and the Great Depression, but what
+about the Holodomor in those same years? The mass suffering of millions, killing between 3.5 and
+5 million people.</p>
+<p>I don't think not knowing is an active choice for the people who don't know. My Western
+education never mentioned any of this to me either, not even briefly. I was shielded from the
+world by a history book barely thicker than a pencil, and I had to find all these victims
+myself. Most people know George Santayana's quote, "Those who cannot remember the past are
+condemned to repeat it." But most people don't remember anyway. This site tries to be a tool for
+people who want to know and remember, to explore what they don't know and remember it. I don't
+want any of these events repeated, and that's why I think it's good they're still on record.</p>
+
+<h2>How is it paid for?</h2>
 <p>I hate advertising, so there's no advertising. I also hate paywalls and sponsors, so none of
 that either. I don't think they're appropriate for this subject anyway. If you want to know who
-pays for this, the answer is again me. Donations are welcome: email me for bank transfer
-details, although I don't expect anything for this work.</p>
+pays for this, the answer is again me. Donations are welcome: email me at
+<a href="mailto:admin@stillonrecord.org">admin@stillonrecord.org</a> for bank transfer details,
+although I don't expect anything for this work.</p>
 
 <h2>Licence</h2>
 <p>The data is under the Open Database License and the text under CC BY-SA 4.0. Use it for
 anything, including commercially. Credit it, and keep whatever you build from it open.</p>
-<p>The whole dataset is <a href="data/dataset.csv">a single file you can download</a>, and
-every record is also there as JSON.</p>
 
 <h2>Standing on other people's work</h2>
-<p>This exists because gulag.online showed it could be done.</p>
-<p>It leans on Memorial, the United States Holocaust Memorial Museum, the Documentation Center
-of Cambodia, the University of Newcastle's frontier massacre project, SlaveVoyages, the UCSF
-Industry Documents Library and ToxicDocs. Above all it leans on the truth commissions and the
-tribunals, whose findings are what make most of these records possible at all.</p>
+<p>The data leans on memorials, documentation centres, university projects, academic books and
+libraries. Above all it leans on the findings of truth commissions and tribunals, and on the
+testimony of survivors, which make most of these records possible at all. Two books like this I'd
+like to mention are <i>The Gulag Archipelago</i> by Aleksandr Solzhenitsyn (Александр Солженицын)
+and <i>Tombstone: The Great Chinese Famine, 1958–1962</i> by Yang Jisheng (杨继绳). I would highly
+recommend reading them yourself.</p>
 <p>Type is IBM Plex, under the SIL Open Font License, served from this site rather than from
 Google. The map library is MapLibre GL, BSD licensed, also served from here. Nothing on these
 pages calls out to a third party except the map tiles and the visitor count.</p>

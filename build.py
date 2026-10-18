@@ -324,9 +324,11 @@ commercial, with attribution and share-alike.
 FOOT = foot()
 
 
-def widen(body, tag='h2'):
+def widen(body, tag='h2', left=None):
     """Group a reading page into sections, one per <tag> heading, so wide screens can set
-    them in columns (see .page.cols in site.css). Narrow screens are unaffected."""
+    them in columns (see .page.cols in site.css). Narrow screens are unaffected.
+    With `left` (a list of heading texts), those sections make a fixed left column and the
+    rest a fixed right column, instead of flowing in reading order."""
     start = body.index('<main class="page')
     end = body.index('</main>')
     main = body[start:end]
@@ -334,6 +336,13 @@ def widen(body, tag='h2'):
     if len(parts) < 3:
         return body
     head = parts[0].replace('<main class="page', '<main class="page cols', 1)
+    if left:
+        title = lambda x: html.unescape(re.sub(r'<[^>]+>', '', re.match(f'<{tag}[^>]*>(.*?)</{tag}>', x, re.S).group(1)))
+        cols = ([x for x in parts[1:] if title(x) in left], [x for x in parts[1:] if title(x) not in left])
+        assert len(cols[0]) == len(left), 'widen: a left-column heading was not found'
+        inner = ''.join('<div class="col">' + ''.join(f'<section>{x}</section>' for x in c) + '</div>'
+                        for c in cols)
+        return body[:start] + head + f'<div class="sections split">{inner}</div>\n' + body[end:]
     sections = ''.join(f'<section>{x}</section>' for x in parts[1:])
     return body[:start] + head + f'<div class="sections">{sections}</div>\n' + body[end:]
 
@@ -934,7 +943,7 @@ pages calls out to a third party except the map tiles and the visitor count.</p>
 <a href="mailto:corrections@stillonrecord.org">corrections@stillonrecord.org</a></p>
 </main>
 {FOOT}"""
-    body = widen(body)
+    body = widen(body, left=['Who runs it?', 'Why run it?'])
     return shell(('About \u2014 Still on Record', 'about.html'), body)
 
 

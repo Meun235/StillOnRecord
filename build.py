@@ -881,8 +881,8 @@ something else? I'm sometimes surprised at how day-to-day life carries on as if 
 happened, and I guess for most people it practically didn't, because they simply don't know.</p>
 <p>We all know the Beatles, Bob Dylan and Elvis Presley and the songs they made around 1960, but
 most of us have never heard of Linxia city, where in those same years more than 41,000 people
-died in a man-made famine, in detail so horrible that just reading about it stays with you for
-the rest of your life. We all know about the Wall Street crash and the Great Depression, but what
+died in a man-made famine, in detail so horrible that only reading about it would make you
+remember it for the rest of your life. We all know about the Wall Street crash and the Great Depression, but what
 about the Holodomor in those same years? The mass suffering of millions, killing between 3.5 and
 5 million people.</p>
 <p>I don't think not knowing is an active choice for the people who don't know. My Western
